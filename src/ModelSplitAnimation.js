@@ -58,10 +58,15 @@ const ModelSplitAnimation = () => {
                 transform: isSplit 
                   ? `translateX(${(i - 1) * 140}px)` 
                   : 'translateX(0)',
-                opacity: isSplit ? 
-                  (i === 0 && splitUnit0) || (i === 1 && splitUnit1) || (i === 2 && splitUnit2) 
-                    ? 0 : 1 
-                  : i === 1 ? 1 : 0,
+                opacity: isSplit
+                  ? (i === 0 && splitUnit0) ||
+                    (i === 1 && splitUnit1) ||
+                    (i === 2 && splitUnit2)
+                    ? 0
+                    : 1
+                  : i === 1
+                  ? 1
+                  : 0,
                 width: isSplit ? '128px' : '384px',
                 zIndex: i === 1 ? 2 : 1
               }}
@@ -79,9 +84,8 @@ const ModelSplitAnimation = () => {
         {[0, 1].map((gpuIndex) => (
           <div
             key={gpuIndex}
-            className={`w-96 h-64 border-2 border-black rounded-lg 
-              bg-white relative
-              transition-all duration-500 ease-in-out transform
+            className={`relative w-96 h-64 border-2 border-black rounded-lg 
+              bg-white transition-all duration-500 ease-in-out transform
               ${showGPUs ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-16'}`}
             style={{
               transitionDelay: `${gpuIndex * 200}ms`
@@ -89,8 +93,11 @@ const ModelSplitAnimation = () => {
           >
             <span className="absolute top-2 left-4 text-xl">GPU{gpuIndex}</span>
             
-            {/* Three Dashed Boxes in each GPU */}
-            <div className="absolute inset-0 flex justify-center items-center gap-8">
+            {/* 
+              Wrap the dashed boxes in a normal container (instead of absolute inset-0).
+              Add padding to create space between the GPU container edges and the boxes.
+            */}
+            <div className="w-full h-full p-4 flex justify-center items-center gap-8">
               {[0, 1, 2].map((unitIndex) => (
                 <div
                   key={unitIndex}
