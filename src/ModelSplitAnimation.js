@@ -112,10 +112,9 @@ const ModelSplitAnimation = () => {
           </>
         ) : (
           <div
-            className="absolute inset-0 border-2 border-black rounded-lg bg-white 
+            className="absolute w-16 inset-0 border-2 border-black rounded-lg bg-white 
               flex items-center justify-center transition-all duration-500"
             style={{
-              width: '56px',
               right: gpuIndex === 1 ? '0' : 'auto',
               left: gpuIndex === 0 ? '0' : 'auto',
               opacity: isUnitSplit ? 1 : 0,
