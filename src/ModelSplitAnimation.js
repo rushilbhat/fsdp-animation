@@ -57,9 +57,8 @@ const ModelSplitAnimation = () => {
       <div className="relative w-32 h-40 border-2 border-dashed border-black rounded-lg">
         {showComponents ? (
           <>
-            {/* Parameters - 1/4 height */}
             <div
-              className="absolute w-14 border-2 border-black rounded-lg bg-white 
+              className="absolute w-16 border-2 border-black rounded-lg bg-white 
                 flex items-center justify-center transition-all duration-500"
               style={{
                 height: '25%',
@@ -73,9 +72,8 @@ const ModelSplitAnimation = () => {
               <span className="text-sm">Params</span>
             </div>
 
-            {/* Gradients - 1/4 height */}
             <div
-              className="absolute w-14 border-2 border-black rounded-lg bg-white 
+              className="absolute w-16 border-2 border-black rounded-lg bg-white 
                 flex items-center justify-center transition-all duration-500"
               style={{
                 height: '25%',
@@ -90,9 +88,8 @@ const ModelSplitAnimation = () => {
               <span className="text-sm">Grads</span>
             </div>
 
-            {/* Optimizer States - 1/2 height */}
             <div
-              className="absolute w-14 border-2 border-black rounded-lg bg-white 
+              className="absolute w-16 border-2 border-black rounded-lg bg-white 
                 flex items-center justify-center transition-all duration-500"
               style={{
                 height: '50%',
@@ -109,10 +106,7 @@ const ModelSplitAnimation = () => {
               </span>
             </div>
 
-            {/* Unit label below the dashed box */}
-            <div
-              className="absolute bottom-[-1.5rem] left-1/2 transform -translate-x-1/2 text-sm"
-            >
+            <div className="absolute bottom-[-1.5rem] left-1/2 transform -translate-x-1/2 text-sm">
               {`Unit${unitIndex}`}
             </div>
           </>
@@ -137,13 +131,12 @@ const ModelSplitAnimation = () => {
 
   return (
     <div className="w-full h-screen relative">
-      {/* Units Section */}
       <div className="absolute left-1/2 top-1/4 transform -translate-x-1/2 flex justify-center items-center">
         <div className="relative flex justify-center items-center">
           {[0, 1, 2].map((i) => (
             <div
               key={i}
-              className="w-32 h-40 border-2 border-black rounded-lg absolute 
+              className="border-2 border-black rounded-lg absolute 
                 flex items-center justify-center bg-white
                 transition-all duration-700 ease-in-out"
               style={{
@@ -160,6 +153,7 @@ const ModelSplitAnimation = () => {
                   ? 1
                   : 0,
                 width: isSplit ? '128px' : '384px',
+                height: '160px',
                 zIndex: i === 1 ? 2 : 1
               }}
             >
@@ -171,16 +165,16 @@ const ModelSplitAnimation = () => {
         </div>
       </div>
 
-      {/* GPUs Section */}
       <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 flex flex-col space-y-8">
         {[0, 1].map((gpuIndex) => (
           <div
             key={gpuIndex}
-            className={`w-96 h-64 border-2 border-black rounded-lg 
+            className={`h-64 border-2 border-black rounded-lg 
               bg-white relative
               transition-all duration-500 ease-in-out transform
               ${showGPUs ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-16'}`}
             style={{
+              width: '520px', // Increased from 384px (w-96) to 480px
               transitionDelay: `${gpuIndex * 200}ms`
             }}
           >
@@ -199,7 +193,6 @@ const ModelSplitAnimation = () => {
         ))}
       </div>
 
-      {/* Reset Button */}
       <button
         onClick={() => {
           setIsSplit(false);
