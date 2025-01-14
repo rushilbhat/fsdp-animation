@@ -132,8 +132,8 @@ const ModelSplitAnimation = () => {
                         (unitIndex === 2 && showHalvesUnit2) 
                           ? 'opacity-100' : 'opacity-0'}`}
                     style={{
-                      left: gpuIndex === 0 ? '0' : 'auto',
-                      right: gpuIndex === 1 ? '0' : 'auto',
+                      left: gpuIndex === 0 ? '-2px' : 'auto',
+                      right: gpuIndex === 1 ? '-2px' : 'auto',
                     }}
                   >
                     <span className="text-sm absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
