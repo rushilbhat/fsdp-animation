@@ -7,6 +7,7 @@ const ModelSplitAnimation = () => {
   const [showHalvesUnit0, setShowHalvesUnit0] = useState(false);
   const [showHalvesUnit1, setShowHalvesUnit1] = useState(false);
   const [showHalvesUnit2, setShowHalvesUnit2] = useState(false);
+  const [centerGPUs, setCenterGPUs] = useState(false);
   const [shouldReset, setShouldReset] = useState(false);
 
   useEffect(() => {
@@ -27,6 +28,12 @@ const ModelSplitAnimation = () => {
 
               const halves2Timer = setTimeout(() => {
                 setShowHalvesUnit2(true);
+
+                const centerTimer = setTimeout(() => {
+                  setCenterGPUs(true);
+                }, 700);
+
+                return () => clearTimeout(centerTimer);
               }, 700);
 
               return () => clearTimeout(halves2Timer);
@@ -51,7 +58,8 @@ const ModelSplitAnimation = () => {
     <div className="w-full h-screen relative">
       {/* Units Container */}
       <div 
-        className="absolute top-1/2 transform -translate-y-1/2 transition-all duration-700"
+        className={`absolute top-1/2 transform -translate-y-1/2 transition-all duration-700
+          ${centerGPUs ? 'opacity-0' : 'opacity-100'}`}
         style={{
           left: isShifted ? '25%' : '50%',
           transform: `translate(${isShifted ? '-50%' : '-50%'}, -50%)`
@@ -88,7 +96,14 @@ const ModelSplitAnimation = () => {
       </div>
 
       {/* GPUs Container */}
-      <div className="absolute left-[75%] top-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col space-y-8">
+      <div 
+        className={`absolute top-1/2 transform -translate-y-1/2 flex flex-col space-y-8
+          transition-all duration-1000 ease-in-out`}
+        style={{
+          left: centerGPUs ? '50%' : '75%',
+          transform: `translate(-50%, -50%)`
+        }}
+      >
         {[0, 1].map((gpuIndex) => (
           <div
             key={gpuIndex}
@@ -140,6 +155,7 @@ const ModelSplitAnimation = () => {
           setShowHalvesUnit0(false);
           setShowHalvesUnit1(false);
           setShowHalvesUnit2(false);
+          setCenterGPUs(false);
           setShouldReset(!shouldReset);
         }}
         className="absolute bottom-4 left-1/2 transform -translate-x-1/2 
