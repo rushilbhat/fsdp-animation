@@ -9,6 +9,7 @@ const ModelSplitAnimation = () => {
   const [showHalvesUnit2, setShowHalvesUnit2] = useState(false);
   const [centerGPUs, setCenterGPUs] = useState(false);
   const [shouldReset, setShouldReset] = useState(false);
+  const [showInternalStructure, setShowInternalStructure] = useState(false);
 
   useEffect(() => {
     const splitTimer = setTimeout(() => {
@@ -31,6 +32,15 @@ const ModelSplitAnimation = () => {
 
                 const centerTimer = setTimeout(() => {
                   setCenterGPUs(true);
+
+                  const structureTimer = setTimeout(() => {
+                    setShowInternalStructure(true);
+                  }, 1000);
+
+                  return () => {
+                    clearTimeout(centerTimer);
+                    clearTimeout(structureTimer);
+                  };
                 }, 700);
 
                 return () => clearTimeout(centerTimer);
@@ -124,9 +134,8 @@ const ModelSplitAnimation = () => {
                   className="w-32 h-40 border-2 border-dashed border-black rounded-2xl relative"
                 >
                   <div 
-                    className={`absolute top-1/2 -translate-y-1/2 w-16 h-40 
-                      border-2 border-solid border-black rounded-2xl bg-white
-                      transition-all duration-500 ease-in-out
+                    className={`absolute top-1/2 -translate-y-1/2 w-16 
+                      transition-all duration-500 ease-in-out flex flex-col
                       ${(unitIndex === 0 && showHalvesUnit0) || 
                         (unitIndex === 1 && showHalvesUnit1) || 
                         (unitIndex === 2 && showHalvesUnit2) 
@@ -134,11 +143,70 @@ const ModelSplitAnimation = () => {
                     style={{
                       left: gpuIndex === 0 ? '-2px' : 'auto',
                       right: gpuIndex === 1 ? '-2px' : 'auto',
+                      height: showInternalStructure ? '160px' : '160px',
                     }}
                   >
-                    <span className="text-sm absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                      Unit{unitIndex}
-                    </span>
+                    {/* Internal structure container */}
+                    <div className="relative h-full w-full">
+                      {/* Params section - 25% height */}
+                      <div 
+                        className={`absolute top-0 w-full
+                          border-2 border-solid border-black rounded-lg bg-white
+                          transition-all duration-300
+                          ${showInternalStructure ? 'opacity-100' : 'opacity-0'}`}
+                        style={{ height: 'calc(25% - 1px)' }}
+                      >
+                        <span className="text-xs absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+                          Params
+                        </span>
+                      </div>
+                      
+                      {/* Grads section - 25% height */}
+                      <div 
+                        className={`absolute w-full
+                          border-2 border-solid border-black rounded-lg bg-white
+                          transition-all duration-300 delay-100
+                          ${showInternalStructure ? 'opacity-100' : 'opacity-0'}`}
+                        style={{ 
+                          top: '25%',
+                          height: 'calc(25% - 1px)'
+                        }}
+                      >
+                        <span className="text-xs absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+                          Grads
+                        </span>
+                      </div>
+                      
+                      {/* Optimizer states section - 50% height */}
+                      <div 
+                        className={`absolute w-full
+                          border-2 border-solid border-black rounded-lg bg-white
+                          transition-all duration-300 delay-200
+                          ${showInternalStructure ? 'opacity-100' : 'opacity-0'}`}
+                        style={{ 
+                          top: '50%',
+                          height: '50%'
+                        }}
+                      >
+                        <span className="text-xs absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center">
+                          Opt.
+                          <br />
+                          states
+                        </span>
+                      </div>
+
+                      {/* Unit label (shows when internal structure is hidden) */}
+                      <div 
+                        className={`absolute top-0 w-full h-full
+                          border-2 border-solid border-black rounded-2xl bg-white
+                          transition-all duration-300
+                          ${showInternalStructure ? 'opacity-0' : 'opacity-100'}`}
+                      >
+                        <span className="text-sm absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+                          Unit{unitIndex}
+                        </span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -155,6 +223,7 @@ const ModelSplitAnimation = () => {
           setShowHalvesUnit0(false);
           setShowHalvesUnit1(false);
           setShowHalvesUnit2(false);
+          setShowInternalStructure(false);
           setCenterGPUs(false);
           setShouldReset(!shouldReset);
         }}
