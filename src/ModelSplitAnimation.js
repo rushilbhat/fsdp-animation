@@ -133,6 +133,11 @@ const ModelSplitAnimation = () => {
                   key={unitIndex}
                   className="w-32 h-40 relative"
                 >
+                  {/* Unit label at bottom */}
+                  <div className={`absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-sm
+                    transition-opacity duration-500 ${showInternalStructure ? 'opacity-100' : 'opacity-0'}`}>
+                    Unit{unitIndex}
+                  </div>
                   {/* Dashed border containers that split */}
                   <div 
                     className={`absolute top-0 w-full border-2 border-dashed border-black rounded-xl
