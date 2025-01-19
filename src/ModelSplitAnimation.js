@@ -79,7 +79,7 @@ const ModelSplitAnimation = () => {
           {[0, 1, 2].map((i) => (
             <div
               key={i}
-              className="border-2 border-black rounded-2xl absolute 
+              className="border-2 border-black rounded-xl absolute 
                 flex items-center justify-center bg-white
                 transition-all duration-500 ease-in-out"
               style={{
@@ -117,7 +117,7 @@ const ModelSplitAnimation = () => {
         {[0, 1].map((gpuIndex) => (
           <div
             key={gpuIndex}
-            className={`h-64 border-2 border-black rounded-2xl 
+            className={`h-64 border-2 border-black rounded-xl 
               bg-white relative
               transition-all duration-500 ease-in-out transform
               ${showGPUs ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}
@@ -131,7 +131,7 @@ const ModelSplitAnimation = () => {
               {[0, 1, 2].map((unitIndex) => (
                 <div
                   key={unitIndex}
-                  className="w-32 h-40 border-2 border-dashed border-black rounded-2xl relative"
+                  className="w-32 h-40 border-2 border-dashed border-black rounded-xl relative"
                 >
                   <div 
                     className={`absolute top-1/2 -translate-y-1/2 w-16 
@@ -150,10 +150,10 @@ const ModelSplitAnimation = () => {
                     <div className="relative h-full w-full">
                       {/* Params section - translates up */}
                       <div 
-                        className="absolute w-full border-2 border-solid border-black rounded-lg bg-white
+                        className="absolute w-full border-2 border-solid border-black rounded-xl bg-white
                           transition-all duration-500"
                         style={{ 
-                          height: '25%',
+                          height: 'calc(25%)',
                           transform: `translateY(${showInternalStructure ? '0' : '50%'})`,
                           opacity: showInternalStructure ? '1' : '0'
                         }}
@@ -165,15 +165,13 @@ const ModelSplitAnimation = () => {
                       
                       {/* Grads section - shrinks from center */}
                       <div 
-                        className="absolute w-full border-2 border-solid border-black rounded-lg bg-white
+                        className="absolute w-full border-2 border-solid border-black rounded-xl bg-white
                           transition-all duration-500"
                         style={{ 
                           top: '50%',
-                          height: showInternalStructure ? '25%' : '100%',
+                          height: showInternalStructure ? 'calc(25%)' : '100%',
                           transform: `translate(0, ${showInternalStructure ? '-100%' : '-50%'})`,
-                          zIndex: showInternalStructure ? '0' : '1',
-                          borderRadius: showInternalStructure ? '0.5rem' : '1rem',
-                          transformOrigin: 'center'
+                          zIndex: showInternalStructure ? '0' : '1'
                         }}
                       >
                         <span className="text-xs absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
@@ -183,7 +181,7 @@ const ModelSplitAnimation = () => {
                       
                       {/* Optimizer states section - translates down */}
                       <div 
-                        className="absolute w-full border-2 border-solid border-black rounded-lg bg-white
+                        className="absolute w-full border-2 border-solid border-black rounded-xl bg-white
                           transition-all duration-500"
                         style={{ 
                           height: '50%',
