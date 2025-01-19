@@ -117,7 +117,7 @@ const ModelSplitAnimation = () => {
         {[0, 1].map((gpuIndex) => (
           <div
             key={gpuIndex}
-            className={`h-64 border-2 border-black rounded-xl 
+            className={`h-72 border-2 border-black rounded-xl 
               bg-white relative
               transition-all duration-500 ease-in-out transform
               ${showGPUs ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}
@@ -126,7 +126,7 @@ const ModelSplitAnimation = () => {
               transitionDelay: `${gpuIndex * 200}ms`
             }}
           >
-            <span className="absolute top-2 left-4 text-xl">GPU{gpuIndex}</span>
+            <span className="absolute bottom-2 right-2 text-xl">GPU{gpuIndex}</span>
             <div className="w-full h-full p-4 flex justify-center items-center gap-8">
               {[0, 1, 2].map((unitIndex) => (
                 <div
