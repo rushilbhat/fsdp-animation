@@ -153,7 +153,7 @@ const ModelSplitAnimation = () => {
                         className="absolute w-full border-2 border-solid border-black rounded-lg bg-white
                           transition-all duration-500"
                         style={{ 
-                          height: 'calc(25% - 1px)',
+                          height: '25%',
                           transform: `translateY(${showInternalStructure ? '0' : '50%'})`,
                           opacity: showInternalStructure ? '1' : '0'
                         }}
@@ -169,7 +169,7 @@ const ModelSplitAnimation = () => {
                           transition-all duration-500"
                         style={{ 
                           top: '50%',
-                          height: showInternalStructure ? 'calc(25% - 1px)' : '100%',
+                          height: showInternalStructure ? '25%' : '100%',
                           transform: `translate(0, ${showInternalStructure ? '-100%' : '-50%'})`,
                           zIndex: showInternalStructure ? '0' : '1',
                           borderRadius: showInternalStructure ? '0.5rem' : '1rem',
