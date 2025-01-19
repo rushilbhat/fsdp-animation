@@ -131,8 +131,34 @@ const ModelSplitAnimation = () => {
               {[0, 1, 2].map((unitIndex) => (
                 <div
                   key={unitIndex}
-                  className="w-32 h-40 border-2 border-dashed border-black rounded-xl relative"
+                  className="w-32 h-40 relative"
                 >
+                  {/* Dashed border containers that split */}
+                  <div 
+                    className={`absolute top-0 w-full border-2 border-dashed border-black rounded-xl
+                      transition-all duration-500`}
+                    style={{
+                      height: showInternalStructure ? '25%' : '100%',
+                      opacity: showInternalStructure ? 1 : 1,
+                    }}
+                  />
+                  <div 
+                    className={`absolute top-1/4 w-full border-2 border-dashed border-black rounded-xl
+                      transition-all duration-500`}
+                    style={{
+                      height: showInternalStructure ? '25%' : '0%',
+                      opacity: showInternalStructure ? 1 : 0,
+                    }}
+                  />
+                  <div 
+                    className={`absolute bottom-0 w-full border-2 border-dashed border-black rounded-xl
+                      transition-all duration-500`}
+                    style={{
+                      height: showInternalStructure ? '50%' : '0%',
+                      opacity: showInternalStructure ? 1 : 0,
+                    }}
+                  />
+
                   <div 
                     className={`absolute top-1/2 -translate-y-1/2 w-16 
                       transition-all duration-500 ease-in-out flex flex-col
@@ -148,7 +174,7 @@ const ModelSplitAnimation = () => {
                   >
                     {/* Internal structure container */}
                     <div className="relative h-full w-full">
-                      {/* Params section - translates up */}
+                      {/* Params section */}
                       <div 
                         className="absolute w-full border-2 border-solid border-black rounded-xl bg-white
                           transition-all duration-500"
@@ -163,7 +189,7 @@ const ModelSplitAnimation = () => {
                         </span>
                       </div>
                       
-                      {/* Grads section - shrinks from center */}
+                      {/* Grads section */}
                       <div 
                         className="absolute w-full border-2 border-solid border-black rounded-xl bg-white
                           transition-all duration-500"
@@ -179,7 +205,7 @@ const ModelSplitAnimation = () => {
                         </span>
                       </div>
                       
-                      {/* Optimizer states section - translates down */}
+                      {/* Optimizer states section */}
                       <div 
                         className="absolute w-full border-2 border-solid border-black rounded-xl bg-white
                           transition-all duration-500"
