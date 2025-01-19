@@ -148,62 +148,53 @@ const ModelSplitAnimation = () => {
                   >
                     {/* Internal structure container */}
                     <div className="relative h-full w-full">
-                      {/* Params section - 25% height */}
+                      {/* Params section - translates up */}
                       <div 
-                        className={`absolute top-0 w-full
-                          border-2 border-solid border-black rounded-lg bg-white
-                          transition-all duration-300
-                          ${showInternalStructure ? 'opacity-100' : 'opacity-0'}`}
-                        style={{ height: 'calc(25% - 1px)' }}
+                        className="absolute w-full border-2 border-solid border-black rounded-lg bg-white
+                          transition-all duration-500"
+                        style={{ 
+                          height: 'calc(25% - 1px)',
+                          transform: `translateY(${showInternalStructure ? '0' : '50%'})`,
+                          opacity: showInternalStructure ? '1' : '0'
+                        }}
                       >
                         <span className="text-xs absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
                           Params
                         </span>
                       </div>
                       
-                      {/* Grads section - 25% height */}
+                      {/* Grads section - shrinks from center */}
                       <div 
-                        className={`absolute w-full
-                          border-2 border-solid border-black rounded-lg bg-white
-                          transition-all duration-300 delay-100
-                          ${showInternalStructure ? 'opacity-100' : 'opacity-0'}`}
+                        className="absolute w-full border-2 border-solid border-black rounded-lg bg-white
+                          transition-all duration-500"
                         style={{ 
-                          top: '25%',
-                          height: 'calc(25% - 1px)'
+                          top: '50%',
+                          height: showInternalStructure ? 'calc(25% - 1px)' : '100%',
+                          transform: `translate(0, ${showInternalStructure ? '-100%' : '-50%'})`,
+                          zIndex: showInternalStructure ? '0' : '1',
+                          borderRadius: showInternalStructure ? '0.5rem' : '1rem',
+                          transformOrigin: 'center'
                         }}
                       >
                         <span className="text-xs absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                          Grads
+                          {showInternalStructure ? 'Grads' : `Unit${unitIndex}`}
                         </span>
                       </div>
                       
-                      {/* Optimizer states section - 50% height */}
+                      {/* Optimizer states section - translates down */}
                       <div 
-                        className={`absolute w-full
-                          border-2 border-solid border-black rounded-lg bg-white
-                          transition-all duration-300 delay-200
-                          ${showInternalStructure ? 'opacity-100' : 'opacity-0'}`}
+                        className="absolute w-full border-2 border-solid border-black rounded-lg bg-white
+                          transition-all duration-500"
                         style={{ 
-                          top: '50%',
-                          height: '50%'
+                          height: '50%',
+                          transform: `translateY(${showInternalStructure ? '100%' : '50%'})`,
+                          opacity: showInternalStructure ? '1' : '0'
                         }}
                       >
                         <span className="text-xs absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center">
                           Opt.
                           <br />
                           states
-                        </span>
-                      </div>
-
-                      {/* Unit label (shows when internal structure is hidden) */}
-                      <div 
-                        className={`absolute top-0 w-full h-full
-                          border-2 border-solid border-black rounded-2xl bg-white
-                          transition-all duration-300
-                          ${showInternalStructure ? 'opacity-0' : 'opacity-100'}`}
-                      >
-                        <span className="text-sm absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                          Unit{unitIndex}
                         </span>
                       </div>
                     </div>
