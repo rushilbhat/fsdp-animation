@@ -143,23 +143,6 @@ const ModelSplitAnimation = () => {
                     }}
                   />
                   <div 
-                    className={`absolute top-1/4 w-full border-2 border-dashed border-black rounded-xl
-                      transition-all duration-500`}
-                    style={{
-                      height: showInternalStructure ? '25%' : '0%',
-                      opacity: showInternalStructure ? 1 : 0,
-                    }}
-                  />
-                  <div 
-                    className={`absolute bottom-0 w-full border-2 border-dashed border-black rounded-xl
-                      transition-all duration-500`}
-                    style={{
-                      height: showInternalStructure ? '50%' : '0%',
-                      opacity: showInternalStructure ? 1 : 0,
-                    }}
-                  />
-
-                  <div 
                     className={`absolute top-1/2 -translate-y-1/2 w-16 
                       transition-all duration-500 ease-in-out flex flex-col
                       ${(unitIndex === 0 && showHalvesUnit0) || 
