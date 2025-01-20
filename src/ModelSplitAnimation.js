@@ -1,5 +1,43 @@
 import React, { useState, useEffect } from 'react';
 
+// FatChevron component
+const FatChevron = () => (
+  <svg
+    viewBox="0 0 24 24"
+    width="32"
+    height="32"
+    fill="none"
+    stroke="currentColor"
+    className="text-blue-300"
+  >
+    <path
+      d="M4 4 L18 12 L4 20"
+      strokeWidth="8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+// AnimatedChevrons component
+const AnimatedChevrons = () => {
+  return (
+    <div className="flex items-center space-x-3">
+      {[0, 1, 2].map((index) => (
+        <div
+          key={index}
+          className="animate-pulse"
+          style={{
+            animationDelay: `${index * 200}ms`,
+          }}
+        >
+          <FatChevron />
+        </div>
+      ))}
+    </div>
+  );
+};
+
 const ModelSplitAnimation = () => {
   const [isSplit, setIsSplit] = useState(false);
   const [isShifted, setIsShifted] = useState(false);
@@ -10,6 +48,7 @@ const ModelSplitAnimation = () => {
   const [centerGPUs, setCenterGPUs] = useState(false);
   const [shouldReset, setShouldReset] = useState(false);
   const [showInternalStructure, setShowInternalStructure] = useState(false);
+  const [showChevrons, setShowChevrons] = useState(false);
 
   useEffect(() => {
     const splitTimer = setTimeout(() => {
@@ -35,6 +74,14 @@ const ModelSplitAnimation = () => {
 
                   const structureTimer = setTimeout(() => {
                     setShowInternalStructure(true);
+
+                    const chevronsTimer = setTimeout(() => {
+                      setShowChevrons(true);
+                    }, 1000);
+
+                    return () => {
+                      clearTimeout(chevronsTimer);
+                    };
                   }, 1000);
 
                   return () => {
@@ -146,7 +193,20 @@ const ModelSplitAnimation = () => {
                       height: showInternalStructure ? '25%' : '100%',
                       opacity: showInternalStructure ? 1 : 1,
                     }}
-                  />
+                  >
+                    {/* AnimatedChevrons in the middle of first dashed box in GPU0 and GPU1 */}
+                    {(gpuIndex === 0 || gpuIndex === 1) && unitIndex === 0 && (
+                      <div
+                        className={`absolute top-1/2 right-32 transform -translate-x-1/2 -translate-y-1/2
+                          transition-opacity duration-500`}
+                        style={{
+                          opacity: showChevrons ? 1 : 0
+                        }}
+                      >
+                        <AnimatedChevrons />
+                      </div>
+                    )}
+                  </div>
                   <div 
                     className={`absolute top-1/2 -translate-y-1/2 w-16 
                       transition-all duration-500 ease-in-out flex flex-col
@@ -228,6 +288,7 @@ const ModelSplitAnimation = () => {
           setShowHalvesUnit2(false);
           setShowInternalStructure(false);
           setCenterGPUs(false);
+          setShowChevrons(false);
           setShouldReset(!shouldReset);
         }}
         className="absolute bottom-4 left-1/2 transform -translate-x-1/2 
