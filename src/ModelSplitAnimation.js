@@ -32,7 +32,7 @@ const FatChevron = ({ pulseDelay }) => (
   </svg>
 );
 
-const AnimatedChevrons = ({ isVisible }) => {
+const AnimatedChevrons = ({ isVisible, fadeOutIndex = -1 }) => {
   const [visibleChevrons, setVisibleChevrons] = useState([false, false, false]);
 
   useEffect(() => {
@@ -60,7 +60,7 @@ const AnimatedChevrons = ({ isVisible }) => {
           key={index}
           className="transition-opacity duration-1000 ease-in-out"
           style={{
-            opacity: visibleChevrons[index] ? 1 : 0,
+            opacity: visibleChevrons[index] && fadeOutIndex < index ? 1 : 0,
           }}
         >
           <FatChevron pulseDelay={index * 300} />
@@ -80,6 +80,7 @@ const ModelSplitAnimation = () => {
   const [centerGPUs, setCenterGPUs] = useState(false);
   const [showInternalStructure, setShowInternalStructure] = useState(false);
   const [showChevrons, setShowChevrons] = useState(false);
+  const [chevronFadeOutIndex, setChevronFadeOutIndex] = useState(-1);
 
   // Arrays for param/activations expansions, repeated for each unit 0..2
   const [expandParamsBox, setExpandParamsBox] = useState([false, false, false]);
@@ -133,7 +134,7 @@ const ModelSplitAnimation = () => {
 
                             // ---- UNIT 1 sequence ----
                             const expandParamsTimer1 = setTimeout(() => {
-                              // keep Unit0’s expansions “frozen” in place
+                              // keep Unit0's expansions "frozen" in place
                               setExpandParamsBox([true, true, false]);
 
                               const showTopBoxTimer1 = setTimeout(() => {
@@ -151,22 +152,41 @@ const ModelSplitAnimation = () => {
 
                                       const shrinkParamsTimer2 = setTimeout(() => {
                                         setShrinkParamsBox([true, true, true]);
+
+                                        // Start chevron fade-out sequence
+                                        const fadeOutChevron0 = setTimeout(() => {
+                                          setChevronFadeOutIndex(0);
+
+                                          const fadeOutChevron1 = setTimeout(() => {
+                                            setChevronFadeOutIndex(1);
+
+                                            const fadeOutChevron2 = setTimeout(() => {
+                                              setChevronFadeOutIndex(2);
+                                            }, 700);
+
+                                            return () => clearTimeout(fadeOutChevron2);
+                                          }, 700);
+
+                                          return () => clearTimeout(fadeOutChevron1);
+                                        }, 1000);
+
+                                        return () => clearTimeout(fadeOutChevron0);
                                       }, 1500);
 
-                                      return () => clearTimeout(shrinkParamsTimer2);
+                                      return () => clearTimeout(showTopBoxTimer2);
                                     }, 500);
 
-                                    return () => clearTimeout(showTopBoxTimer2);
+                                    return () => clearTimeout(expandParamsTimer2);
                                   }, 1000);
                                   // ---- end UNIT 2 ----
 
-                                  return () => clearTimeout(expandParamsTimer2);
+                                  return () => clearTimeout(shrinkParamsTimer0);
                                 }, 1500);
 
-                                return () => clearTimeout(showTopBoxTimer1);
+                                return () => clearTimeout(showTopBoxTimer0);
                               }, 500);
 
-                              return () => clearTimeout(expandParamsTimer1);
+                              return () => clearTimeout(expandParamsTimer0);
                             }, 1000);
                             // ---- end UNIT 1 ----
 
@@ -316,12 +336,12 @@ const ModelSplitAnimation = () => {
                     {/* AnimatedChevrons in the middle of first dashed box in GPU0 or GPU1, Unit0 */}
                     {unitIndex === 0 && (
                       <div className="absolute top-1/2 right-28 transform -translate-x-1/2 -translate-y-1/2">
-                        <AnimatedChevrons isVisible={showChevrons} />
+                        <AnimatedChevrons isVisible={showChevrons} fadeOutIndex={chevronFadeOutIndex} />
                       </div>
                     )}
                   </div>
 
-                  {/* The “internal structure” box that slides in (Params / Grads / Opt states) */}
+                  {/* The "internal structure" box that slides in (Params / Grads / Opt states) */}
                   <div 
                     className={`absolute top-1/2 -translate-y-1/2 w-16 
                       transition-all duration-500 ease-in-out flex flex-col
@@ -412,6 +432,7 @@ const ModelSplitAnimation = () => {
           setShowInternalStructure(false);
           setCenterGPUs(false);
           setShowChevrons(false);
+          setChevronFadeOutIndex(-1);
 
           // Reset new arrays
           setExpandParamsBox([false, false, false]);
