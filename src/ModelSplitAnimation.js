@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
-// FatChevron component
-const FatChevron = () => (
+// FatChevron component with custom pulse animation
+const FatChevron = ({ pulseDelay }) => (
   <svg
     viewBox="0 0 24 24"
     width="32"
@@ -9,29 +9,63 @@ const FatChevron = () => (
     fill="none"
     stroke="currentColor"
     className="text-blue-300"
+    style={{
+      animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+      animationDelay: `${pulseDelay}ms`
+    }}
   >
+    <style>{`
+      @keyframes pulse {
+        0%, 100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: .5;
+        }
+      }
+    `}</style>
     <path
       d="M4 4 L18 12 L4 20"
-      strokeWidth="8"
+      strokeWidth="6"
       strokeLinecap="round"
       strokeLinejoin="round"
     />
   </svg>
 );
 
-// AnimatedChevrons component
-const AnimatedChevrons = () => {
+// AnimatedChevrons component with sequential appearance and pulsing
+const AnimatedChevrons = ({ isVisible }) => {
+  const [visibleChevrons, setVisibleChevrons] = useState([false, false, false]);
+
+  useEffect(() => {
+    if (isVisible) {
+      const timers = [0, 1, 2].map((index) =>
+        setTimeout(() => {
+          setVisibleChevrons((prev) => {
+            const next = [...prev];
+            next[index] = true;
+            return next;
+          });
+        }, index * 200)
+      );
+
+      return () => timers.forEach(clearTimeout);
+    } else {
+      setVisibleChevrons([false, false, false]);
+    }
+  }, [isVisible]);
+
   return (
-    <div className="flex items-center space-x-3">
+    <div className="flex items-center space-x-2">
       {[0, 1, 2].map((index) => (
         <div
           key={index}
-          className="animate-pulse"
+          className="transition-opacity duration-1000 ease-in-out"
           style={{
-            animationDelay: `${index * 200}ms`,
+            opacity: visibleChevrons[index] ? 1 : 0,
           }}
         >
-          <FatChevron />
+          <FatChevron pulseDelay={index * 300} />
         </div>
       ))}
     </div>
@@ -49,7 +83,6 @@ const ModelSplitAnimation = () => {
   const [shouldReset, setShouldReset] = useState(false);
   const [showInternalStructure, setShowInternalStructure] = useState(false);
   const [showChevrons, setShowChevrons] = useState(false);
-  const [expandParamsBox, setExpandParamsBox] = useState(false);
 
   useEffect(() => {
     const splitTimer = setTimeout(() => {
@@ -78,14 +111,6 @@ const ModelSplitAnimation = () => {
 
                     const chevronsTimer = setTimeout(() => {
                       setShowChevrons(true);
-
-                      const expandParamsTimer = setTimeout(() => {
-                        setExpandParamsBox(true);
-                      }, 1000);
-
-                      return () => {
-                        clearTimeout(expandParamsTimer);
-                      };
                     }, 1000);
 
                     return () => {
@@ -203,16 +228,10 @@ const ModelSplitAnimation = () => {
                       opacity: showInternalStructure ? 1 : 1,
                     }}
                   >
-                    {/* AnimatedChevrons in the middle of first dashed box in GPU0 and GPU1 */}
+                    {/* AnimatedChevrons in the middle of first dashed box in GPU0 */}
                     {(gpuIndex === 0 || gpuIndex === 1) && unitIndex === 0 && (
-                      <div
-                        className={`absolute top-1/2 right-32 transform -translate-x-1/2 -translate-y-1/2
-                          transition-opacity duration-500`}
-                        style={{
-                          opacity: showChevrons ? 1 : 0
-                        }}
-                      >
-                        <AnimatedChevrons />
+                      <div className="absolute top-1/2 right-28 transform -translate-x-1/2 -translate-y-1/2">
+                        <AnimatedChevrons isVisible={showChevrons} />
                       </div>
                     )}
                   </div>
@@ -227,20 +246,16 @@ const ModelSplitAnimation = () => {
                       left: gpuIndex === 0 ? '0px' : 'auto',
                       right: gpuIndex === 1 ? '0px' : 'auto',
                       height: showInternalStructure ? '160px' : '160px',
-                      width: '64px',
                     }}
                   >
                     {/* Internal structure container */}
-                    <div className="relative h-full">
+                    <div className="relative h-full w-full">
                       {/* Params section */}
                       <div 
-                        className="absolute border-2 border-solid border-black rounded-xl bg-white
+                        className="absolute w-full border-2 border-solid border-black rounded-xl bg-white
                           transition-all duration-500"
                         style={{ 
                           height: 'calc(25%)',
-                          width: (gpuIndex === 0 || gpuIndex === 1) && unitIndex === 0 && expandParamsBox ? '128px' : '100%',
-                          right: gpuIndex === 1 && unitIndex === 0 && expandParamsBox ? '0' : 'auto',
-                          left: gpuIndex === 0 && unitIndex === 0 && expandParamsBox ? '0' : 'auto',
                           transform: `translateY(${showInternalStructure ? '0' : '50%'})`,
                           opacity: showInternalStructure ? '1' : '0'
                         }}
@@ -302,7 +317,6 @@ const ModelSplitAnimation = () => {
           setShowInternalStructure(false);
           setCenterGPUs(false);
           setShowChevrons(false);
-          setExpandParamsBox(false);
           setShouldReset(!shouldReset);
         }}
         className="absolute bottom-4 left-1/2 transform -translate-x-1/2 
