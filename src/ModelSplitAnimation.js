@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 
-// FatChevron component with custom pulse animation
 const FatChevron = ({ pulseDelay }) => (
   <svg
     viewBox="0 0 24 24"
@@ -33,7 +32,6 @@ const FatChevron = ({ pulseDelay }) => (
   </svg>
 );
 
-// AnimatedChevrons component with sequential appearance and pulsing
 const AnimatedChevrons = ({ isVisible }) => {
   const [visibleChevrons, setVisibleChevrons] = useState([false, false, false]);
 
@@ -80,12 +78,18 @@ const ModelSplitAnimation = () => {
   const [showHalvesUnit1, setShowHalvesUnit1] = useState(false);
   const [showHalvesUnit2, setShowHalvesUnit2] = useState(false);
   const [centerGPUs, setCenterGPUs] = useState(false);
-  const [shouldReset, setShouldReset] = useState(false);
   const [showInternalStructure, setShowInternalStructure] = useState(false);
   const [showChevrons, setShowChevrons] = useState(false);
-  const [expandParamsBox, setExpandParamsBox] = useState(false);
+
+  // Arrays for param/activations expansions, repeated for each unit 0..2
+  const [expandParamsBox, setExpandParamsBox] = useState([false, false, false]);
+  const [showTopBox, setShowTopBox] = useState([false, false, false]);
+  const [shrinkParamsBox, setShrinkParamsBox] = useState([false, false, false]);
+
+  const [shouldReset, setShouldReset] = useState(false);
 
   useEffect(() => {
+    // Start the entire sequence
     const splitTimer = setTimeout(() => {
       setIsSplit(true);
 
@@ -113,19 +117,75 @@ const ModelSplitAnimation = () => {
                     const chevronsTimer = setTimeout(() => {
                       setShowChevrons(true);
 
-                      const expandParamsTimer = setTimeout(() => {
-                        setExpandParamsBox(true);
+                      // ---------------------------------
+                      // SEQUENTIAL expansions for each unit
+                      // ---------------------------------
+
+                      // ---- UNIT 0 sequence ----
+                      const expandParamsTimer0 = setTimeout(() => {
+                        setExpandParamsBox([true, false, false]);
+
+                        const showTopBoxTimer0 = setTimeout(() => {
+                          setShowTopBox([true, false, false]);
+
+                          const shrinkParamsTimer0 = setTimeout(() => {
+                            setShrinkParamsBox([true, false, false]);
+
+                            // ---- UNIT 1 sequence ----
+                            const expandParamsTimer1 = setTimeout(() => {
+                              // keep Unit0’s expansions “frozen” in place
+                              setExpandParamsBox([true, true, false]);
+
+                              const showTopBoxTimer1 = setTimeout(() => {
+                                setShowTopBox([true, true, false]);
+
+                                const shrinkParamsTimer1 = setTimeout(() => {
+                                  setShrinkParamsBox([true, true, false]);
+
+                                  // ---- UNIT 2 sequence ----
+                                  const expandParamsTimer2 = setTimeout(() => {
+                                    setExpandParamsBox([true, true, true]);
+
+                                    const showTopBoxTimer2 = setTimeout(() => {
+                                      setShowTopBox([true, true, true]);
+
+                                      const shrinkParamsTimer2 = setTimeout(() => {
+                                        setShrinkParamsBox([true, true, true]);
+                                      }, 1500);
+
+                                      return () => clearTimeout(shrinkParamsTimer2);
+                                    }, 500);
+
+                                    return () => clearTimeout(showTopBoxTimer2);
+                                  }, 1000);
+                                  // ---- end UNIT 2 ----
+
+                                  return () => clearTimeout(expandParamsTimer2);
+                                }, 1500);
+
+                                return () => clearTimeout(showTopBoxTimer1);
+                              }, 500);
+
+                              return () => clearTimeout(expandParamsTimer1);
+                            }, 1000);
+                            // ---- end UNIT 1 ----
+
+                            return () => clearTimeout(shrinkParamsTimer0);
+                          }, 1500);
+
+                          return () => clearTimeout(showTopBoxTimer0);
+                        }, 500);
+
+                        return () => clearTimeout(expandParamsTimer0);
                       }, 1000);
 
-                      return () => clearTimeout(expandParamsTimer);
+                      return () => clearTimeout(expandParamsTimer0);
                     }, 1000);
 
                     return () => clearTimeout(chevronsTimer);
                   }, 1000);
 
-                  return () => {
-                    clearTimeout(structureTimer);
-                  };
+                  return () => clearTimeout(structureTimer);
                 }, 700);
 
                 return () => clearTimeout(centerTimer);
@@ -214,15 +274,36 @@ const ModelSplitAnimation = () => {
             <span className="absolute bottom-2 right-2 text-xl">GPU{gpuIndex}</span>
             <div className="w-full h-full p-4 flex justify-center items-center gap-8">
               {[0, 1, 2].map((unitIndex) => (
-                <div
-                  key={unitIndex}
-                  className="w-32 h-40 relative"
-                >
+                <div key={unitIndex} className="w-32 h-40 relative">
                   {/* Unit label at bottom */}
-                  <div className={`absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-sm
-                    transition-opacity duration-500 ${showInternalStructure ? 'opacity-100' : 'opacity-0'}`}>
+                  <div 
+                    className={`absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-sm
+                      transition-opacity duration-500 
+                      ${showInternalStructure ? 'opacity-100' : 'opacity-0'}`}
+                  >
                     Unit{unitIndex}
                   </div>
+
+                  {/* The top "Activations" box for each GPU's Unit */}
+                  <div
+                    className="absolute border-2 border-solid border-black rounded-xl bg-white
+                      transition-all duration-500"
+                    style={{
+                      top: '-30px',
+                      height: '12.5%',
+                      width: '128px',
+                      // Only show if showTopBox[unitIndex] is true
+                      opacity: showTopBox[unitIndex] ? 1 : 0,
+                      left: gpuIndex === 1 ? 'auto' : 0,
+                      right: gpuIndex === 1 ? 0 : 'auto',
+                      transition: 'opacity 1000ms ease-in-out'
+                    }}
+                  >
+                    <span className="text-xs absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 whitespace-nowrap">
+                      Activations
+                    </span>
+                  </div>
+
                   {/* Dashed border containers that split */}
                   <div 
                     className={`absolute top-0 w-full border-2 border-dashed border-black rounded-xl
@@ -232,13 +313,15 @@ const ModelSplitAnimation = () => {
                       opacity: showInternalStructure ? 1 : 1,
                     }}
                   >
-                    {/* AnimatedChevrons in the middle of first dashed box in GPU0 */}
-                    {(gpuIndex === 0 || gpuIndex === 1) && unitIndex === 0 && (
+                    {/* AnimatedChevrons in the middle of first dashed box in GPU0 or GPU1, Unit0 */}
+                    {unitIndex === 0 && (
                       <div className="absolute top-1/2 right-28 transform -translate-x-1/2 -translate-y-1/2">
                         <AnimatedChevrons isVisible={showChevrons} />
                       </div>
                     )}
                   </div>
+
+                  {/* The “internal structure” box that slides in (Params / Grads / Opt states) */}
                   <div 
                     className={`absolute top-1/2 -translate-y-1/2 w-16 
                       transition-all duration-500 ease-in-out flex flex-col
@@ -249,10 +332,9 @@ const ModelSplitAnimation = () => {
                     style={{
                       left: gpuIndex === 0 ? '0px' : 'auto',
                       right: gpuIndex === 1 ? '0px' : 'auto',
-                      height: showInternalStructure ? '160px' : '160px',
+                      height: '160px',
                     }}
                   >
-                    {/* Internal structure container */}
                     <div className="relative h-full w-full">
                       {/* Params section */}
                       <div 
@@ -260,7 +342,12 @@ const ModelSplitAnimation = () => {
                           transition-all duration-500"
                         style={{ 
                           height: 'calc(25%)',
-                          width: (gpuIndex === 0 || gpuIndex === 1) && unitIndex === 0 && expandParamsBox ? '128px' : '100%',
+                          // Expand only if expandParamsBox[unitIndex] && not shrinkParamsBox[unitIndex]
+                          width:
+                            expandParamsBox[unitIndex] && 
+                            !shrinkParamsBox[unitIndex]
+                              ? '128px'
+                              : '100%',
                           left: gpuIndex === 1 ? 'auto' : '0',
                           right: gpuIndex === 1 ? '0' : 'auto',
                           transform: `translateY(${showInternalStructure ? '0' : '50%'})`,
@@ -315,6 +402,7 @@ const ModelSplitAnimation = () => {
 
       <button
         onClick={() => {
+          // Reset everything
           setIsSplit(false);
           setIsShifted(false);
           setShowGPUs(false);
@@ -324,8 +412,14 @@ const ModelSplitAnimation = () => {
           setShowInternalStructure(false);
           setCenterGPUs(false);
           setShowChevrons(false);
-          setExpandParamsBox(false);
-          setShouldReset(!shouldReset);
+
+          // Reset new arrays
+          setExpandParamsBox([false, false, false]);
+          setShowTopBox([false, false, false]);
+          setShrinkParamsBox([false, false, false]);
+
+          // Trigger the useEffect sequence again
+          setShouldReset((prev) => !prev);
         }}
         className="absolute bottom-4 left-1/2 transform -translate-x-1/2 
           px-4 py-2 bg-blue-500 text-white rounded-xl hover:bg-blue-600
