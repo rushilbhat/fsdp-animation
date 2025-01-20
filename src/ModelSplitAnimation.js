@@ -49,6 +49,7 @@ const ModelSplitAnimation = () => {
   const [shouldReset, setShouldReset] = useState(false);
   const [showInternalStructure, setShowInternalStructure] = useState(false);
   const [showChevrons, setShowChevrons] = useState(false);
+  const [expandParamsBox, setExpandParamsBox] = useState(false);
 
   useEffect(() => {
     const splitTimer = setTimeout(() => {
@@ -77,6 +78,14 @@ const ModelSplitAnimation = () => {
 
                     const chevronsTimer = setTimeout(() => {
                       setShowChevrons(true);
+
+                      const expandParamsTimer = setTimeout(() => {
+                        setExpandParamsBox(true);
+                      }, 1000);
+
+                      return () => {
+                        clearTimeout(expandParamsTimer);
+                      };
                     }, 1000);
 
                     return () => {
@@ -215,19 +224,23 @@ const ModelSplitAnimation = () => {
                         (unitIndex === 2 && showHalvesUnit2) 
                           ? 'opacity-100' : 'opacity-0'}`}
                     style={{
-                      left: gpuIndex === 0 ? '-2px' : 'auto',
-                      right: gpuIndex === 1 ? '-2px' : 'auto',
+                      left: gpuIndex === 0 ? '0px' : 'auto',
+                      right: gpuIndex === 1 ? '0px' : 'auto',
                       height: showInternalStructure ? '160px' : '160px',
+                      width: '64px',
                     }}
                   >
                     {/* Internal structure container */}
-                    <div className="relative h-full w-full">
+                    <div className="relative h-full">
                       {/* Params section */}
                       <div 
-                        className="absolute w-full border-2 border-solid border-black rounded-xl bg-white
+                        className="absolute border-2 border-solid border-black rounded-xl bg-white
                           transition-all duration-500"
                         style={{ 
                           height: 'calc(25%)',
+                          width: (gpuIndex === 0 || gpuIndex === 1) && unitIndex === 0 && expandParamsBox ? '128px' : '100%',
+                          right: gpuIndex === 1 && unitIndex === 0 && expandParamsBox ? '0' : 'auto',
+                          left: gpuIndex === 0 && unitIndex === 0 && expandParamsBox ? '0' : 'auto',
                           transform: `translateY(${showInternalStructure ? '0' : '50%'})`,
                           opacity: showInternalStructure ? '1' : '0'
                         }}
@@ -289,6 +302,7 @@ const ModelSplitAnimation = () => {
           setShowInternalStructure(false);
           setCenterGPUs(false);
           setShowChevrons(false);
+          setExpandParamsBox(false);
           setShouldReset(!shouldReset);
         }}
         className="absolute bottom-4 left-1/2 transform -translate-x-1/2 
