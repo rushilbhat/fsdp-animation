@@ -118,88 +118,68 @@ const ModelSplitAnimation = () => {
                     const chevronsTimer = setTimeout(() => {
                       setShowChevrons(true);
 
-                      // ---------------------------------
-                      // SEQUENTIAL expansions for each unit
-                      // ---------------------------------
+                      // Helper function to create sequential unit animations
+                      const createUnitSequence = (unitIndex, prevTimers = []) => {
+                        const expandParamsTimer = setTimeout(() => {
+                          setExpandParamsBox(prev => {
+                            const next = [...prev];
+                            next[unitIndex] = true;
+                            return next;
+                          });
 
-                      // ---- UNIT 0 sequence ----
-                      const expandParamsTimer0 = setTimeout(() => {
-                        setExpandParamsBox([true, false, false]);
+                          const showTopBoxTimer = setTimeout(() => {
+                            setShowTopBox(prev => {
+                              const next = [...prev];
+                              next[unitIndex] = true;
+                              return next;
+                            });
 
-                        const showTopBoxTimer0 = setTimeout(() => {
-                          setShowTopBox([true, false, false]);
+                            const shrinkParamsTimer = setTimeout(() => {
+                              setShrinkParamsBox(prev => {
+                                const next = [...prev];
+                                next[unitIndex] = true;
+                                return next;
+                              });
 
-                          const shrinkParamsTimer0 = setTimeout(() => {
-                            setShrinkParamsBox([true, false, false]);
+                              // Start next unit's sequence or chevron fade-out
+                              if (unitIndex < 2) {
+                                createUnitSequence(unitIndex + 1, [
+                                  ...prevTimers,
+                                  expandParamsTimer,
+                                  showTopBoxTimer,
+                                  shrinkParamsTimer
+                                ]);
+                              } else {
+                                // Start chevron fade-out sequence after last unit
+                                const fadeOutSequence = [0, 1, 2].map((i) => {
+                                  return setTimeout(() => {
+                                    setChevronFadeOutIndex(i);
+                                  }, 1000 + i * 700);
+                                });
+                                
+                                return () => {
+                                  [...prevTimers, ...fadeOutSequence].forEach(clearTimeout);
+                                };
+                              }
+                            }, 1500);
 
-                            // ---- UNIT 1 sequence ----
-                            const expandParamsTimer1 = setTimeout(() => {
-                              // keep Unit0's expansions "frozen" in place
-                              setExpandParamsBox([true, true, false]);
+                            return () => {
+                              [...prevTimers, expandParamsTimer, showTopBoxTimer].forEach(clearTimeout);
+                            };
+                          }, 500);
 
-                              const showTopBoxTimer1 = setTimeout(() => {
-                                setShowTopBox([true, true, false]);
+                          return () => {
+                            [...prevTimers, expandParamsTimer].forEach(clearTimeout);
+                          };
+                        }, 1000);
 
-                                const shrinkParamsTimer1 = setTimeout(() => {
-                                  setShrinkParamsBox([true, true, false]);
+                        return () => {
+                          [...prevTimers, expandParamsTimer].forEach(clearTimeout);
+                        };
+                      };
 
-                                  // ---- UNIT 2 sequence ----
-                                  const expandParamsTimer2 = setTimeout(() => {
-                                    setExpandParamsBox([true, true, true]);
-
-                                    const showTopBoxTimer2 = setTimeout(() => {
-                                      setShowTopBox([true, true, true]);
-
-                                      const shrinkParamsTimer2 = setTimeout(() => {
-                                        setShrinkParamsBox([true, true, true]);
-
-                                        // Start chevron fade-out sequence
-                                        const fadeOutChevron0 = setTimeout(() => {
-                                          setChevronFadeOutIndex(0);
-
-                                          const fadeOutChevron1 = setTimeout(() => {
-                                            setChevronFadeOutIndex(1);
-
-                                            const fadeOutChevron2 = setTimeout(() => {
-                                              setChevronFadeOutIndex(2);
-                                            }, 700);
-
-                                            return () => clearTimeout(fadeOutChevron2);
-                                          }, 700);
-
-                                          return () => clearTimeout(fadeOutChevron1);
-                                        }, 1000);
-
-                                        return () => clearTimeout(fadeOutChevron0);
-                                      }, 1500);
-
-                                      return () => clearTimeout(showTopBoxTimer2);
-                                    }, 500);
-
-                                    return () => clearTimeout(expandParamsTimer2);
-                                  }, 1000);
-                                  // ---- end UNIT 2 ----
-
-                                  return () => clearTimeout(shrinkParamsTimer0);
-                                }, 1500);
-
-                                return () => clearTimeout(showTopBoxTimer0);
-                              }, 500);
-
-                              return () => clearTimeout(expandParamsTimer0);
-                            }, 1000);
-                            // ---- end UNIT 1 ----
-
-                            return () => clearTimeout(shrinkParamsTimer0);
-                          }, 1500);
-
-                          return () => clearTimeout(showTopBoxTimer0);
-                        }, 500);
-
-                        return () => clearTimeout(expandParamsTimer0);
-                      }, 1000);
-
-                      return () => clearTimeout(expandParamsTimer0);
+                      // Start the sequence with Unit 0
+                      createUnitSequence(0);
                     }, 1000);
 
                     return () => clearTimeout(chevronsTimer);
