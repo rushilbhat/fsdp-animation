@@ -5,7 +5,7 @@ import React, { useState, useEffect } from 'react';
  *  - pulseDelay: milliseconds delay before pulse animation starts
  *  - reverseArrowDir: if true, points the arrow left instead of right
  */
-const FatChevron = ({ pulseDelay, reverseArrowDir = false }) => {
+const FatChevron = ({ pulseDelay, reverseArrowDir = false, color = "text-blue-300" }) => {
   // Original path (right-facing arrow): "M4 4 L18 12 L4 20"
   // Reversed path (left-facing arrow):  "M20 4 L6 12 L20 20"
   const chevronPath = reverseArrowDir
@@ -19,7 +19,7 @@ const FatChevron = ({ pulseDelay, reverseArrowDir = false }) => {
       height="32"
       fill="none"
       stroke="currentColor"
-      className="text-blue-300"
+      className={color}
       style={{
         animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         animationDelay: `${pulseDelay}ms`
@@ -58,7 +58,8 @@ const AnimatedChevrons = ({
   fadeOutIndex = -1,
   reverseFadeIn = false,
   reverseArrowDir = false,
-  reversePulseOrder = false
+  reversePulseOrder = false,
+  color = "text-blue-300"
 }) => {
   const [visibleChevrons, setVisibleChevrons] = useState([false, false, false]);
 
@@ -100,6 +101,7 @@ const AnimatedChevrons = ({
             <FatChevron
               pulseDelay={pulseIndex * 300}
               reverseArrowDir={reverseArrowDir}
+              color={color}
             />
           </div>
         );
@@ -404,6 +406,7 @@ const ModelSplitAnimation = () => {
                           reverseFadeIn={true}       // fade in right->left
                           reverseArrowDir={true}     // left-facing arrows
                           reversePulseOrder={true}   // rightmost arrow pulses first
+                          color="text-red-300"
                         />
                       </div>
                     )}
