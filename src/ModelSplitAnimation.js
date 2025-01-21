@@ -355,22 +355,22 @@ const ModelSplitAnimation = () => {
                     className="absolute border-2 border-solid border-black rounded-xl bg-white
                       transition-all duration-500"
                     style={{
-                      top: '-30px',
-                      height: '12.5%',
-                      width: '128px',
+                      top: '25%',
+                      height: 'calc(75%)',
+                      width: '64px',
                       opacity: showTopBox[unitIndex] ? 1 : 0,
-                      left: gpuIndex === 1 ? 'auto' : 0,
-                      right: gpuIndex === 1 ? 0 : 'auto',
+                      right: gpuIndex === 1 ? 'auto' : 0,
+                      left: gpuIndex === 1 ? 0 : 'auto',
                       transition: 'opacity 1000ms ease-in-out'
                     }}
                   >
                     <span className="text-xs absolute top-1/2 left-1/2 
                       -translate-x-1/2 -translate-y-1/2 whitespace-nowrap"
                     >
-                      Activations
+                      Act.
                     </span>
                   </div>
-
+        
                   {/* Dashed box containing the chevrons */}
                   <div
                     className={`absolute top-0 w-full border-2 border-dashed border-black rounded-xl
