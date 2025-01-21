@@ -127,10 +127,12 @@ const ModelSplitAnimation = () => {
 
   // Second set of chevrons (anchored to Unit2)
   const [showChevrons2, setShowChevrons2] = useState(false);
+  const [showPerstepGrads, setShowPerstepGrads] = useState(false);
+  const [expandUnit2ParamsFinal, setExpandUnit2ParamsFinal] = useState(false);
 
-  // Arrays controlling param expansions, top boxes, etc.
+  // Arrays controlling param expansions, Activations boxes, etc.
   const [expandParamsBox, setExpandParamsBox] = useState([false, false, false]);
-  const [showTopBox, setShowTopBox] = useState([false, false, false]);
+  const [showActivationsBox, setShowActivationsBox] = useState([false, false, false]);
   const [shrinkParamsBox, setShrinkParamsBox] = useState([false, false, false]);
 
   // Trigger to restart the entire sequence
@@ -176,9 +178,9 @@ const ModelSplitAnimation = () => {
                             return next;
                           });
 
-                          // Show top Activations box
-                          const showTopBoxTimer = setTimeout(() => {
-                            setShowTopBox((prev) => {
+                          // Show Activations box
+                          const showActivationsBoxTimer = setTimeout(() => {
+                            setShowActivationsBox((prev) => {
                               const next = [...prev];
                               next[unitIndex] = true;
                               return next;
@@ -197,7 +199,7 @@ const ModelSplitAnimation = () => {
                                 createUnitSequence(unitIndex + 1, [
                                   ...prevTimers,
                                   expandParamsTimer,
-                                  showTopBoxTimer,
+                                  showActivationsBoxTimer,
                                   shrinkParamsTimer
                                 ]);
                               } else {
@@ -211,18 +213,32 @@ const ModelSplitAnimation = () => {
                                 // After they've fully faded, show the second set
                                 const finalFadeOutTimer = setTimeout(() => {
                                   setShowChevrons2(true);
-                                }, 3400); 
-                                // 3400 = 1000 + 2*700 + ~1000 for final fade
+                                  
+                                  // First expand params box for Unit2
+                                  const expandParamsFinalTimer = setTimeout(() => {
+                                    setExpandUnit2ParamsFinal(true);
+                                    
+                                    // Then show perstepgrads after params expansion
+                                    const perstepGradsTimer = setTimeout(() => {
+                                      setShowPerstepGrads(true);
+                                    }, 1000);
 
-                                return () => {
-                                  [...prevTimers, ...fadeOutSequence].forEach(clearTimeout);
-                                  clearTimeout(finalFadeOutTimer);
-                                };
+                                    return () => {
+                                      clearTimeout(perstepGradsTimer);
+                                    };
+                                  }, 1000);
+
+                                  return () => {
+                                    [...prevTimers, ...fadeOutSequence].forEach(clearTimeout);
+                                    clearTimeout(finalFadeOutTimer);
+                                    clearTimeout(expandParamsFinalTimer);
+                                  };
+                                }, 3400);
                               }
                             }, 1500);
 
                             return () => {
-                              [...prevTimers, expandParamsTimer, showTopBoxTimer].forEach(clearTimeout);
+                              [...prevTimers, expandParamsTimer, showActivationsBoxTimer].forEach(clearTimeout);
                             };
                           }, 500);
 
@@ -341,6 +357,26 @@ const ModelSplitAnimation = () => {
             <div className="w-full h-full p-4 flex justify-center items-center gap-8">
               {[0, 1, 2].map((unitIndex) => (
                 <div key={unitIndex} className="w-32 h-40 relative">
+                  {/* Perstep grads box - only for Unit2 */}
+                  {unitIndex === 2 && (
+                    <div
+                      className="absolute border-2 border-solid border-black rounded-xl bg-white
+                        transition-all duration-500"
+                      style={{
+                        height: '25%',
+                        width: '100%',
+                        top: '-25%',
+                        opacity: showPerstepGrads ? 1 : 0,
+                      }}
+                    >
+                      <span className="text-xs absolute top-1/2 left-1/2 
+                        -translate-x-1/2 -translate-y-1/2 whitespace-nowrap"
+                      >
+                        Per step grads
+                      </span>
+                    </div>
+                  )}
+
                   {/* Label under each Unit */}
                   <div
                     className={`absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-sm
@@ -350,7 +386,7 @@ const ModelSplitAnimation = () => {
                     Unit{unitIndex}
                   </div>
 
-                  {/* Top "Activations" box above each Unit */}
+                  {/* Activations box*/}
                   <div
                     className="absolute border-2 border-solid border-black rounded-xl bg-white
                       transition-all duration-500"
@@ -358,7 +394,7 @@ const ModelSplitAnimation = () => {
                       top: '25%',
                       height: 'calc(75%)',
                       width: '64px',
-                      opacity: showTopBox[unitIndex] ? 1 : 0,
+                      opacity: showActivationsBox[unitIndex] ? 1 : 0,
                       right: gpuIndex === 1 ? 'auto' : 0,
                       left: gpuIndex === 1 ? 0 : 'auto',
                       transition: 'opacity 1000ms ease-in-out'
@@ -437,7 +473,8 @@ const ModelSplitAnimation = () => {
                         style={{
                           height: 'calc(25%)',
                           width:
-                            expandParamsBox[unitIndex] && !shrinkParamsBox[unitIndex]
+                            (expandParamsBox[unitIndex] && !shrinkParamsBox[unitIndex]) ||
+                            (unitIndex === 2 && expandUnit2ParamsFinal)
                               ? '128px'
                               : '100%',
                           left: gpuIndex === 1 ? 'auto' : '0',
@@ -512,6 +549,8 @@ const ModelSplitAnimation = () => {
           setShowHalvesUnit2(false);
           setShowInternalStructure(false);
           setCenterGPUs(false);
+          setShowPerstepGrads(false);
+          setExpandUnit2ParamsFinal(false);
 
           // First chevron set
           setShowChevrons(false);
@@ -522,7 +561,7 @@ const ModelSplitAnimation = () => {
 
           // Reset expansions
           setExpandParamsBox([false, false, false]);
-          setShowTopBox([false, false, false]);
+          setShowActivationsBox([false, false, false]);
           setShrinkParamsBox([false, false, false]);
 
           // Trigger the entire sequence again
