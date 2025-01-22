@@ -128,6 +128,9 @@ const ModelSplitAnimation = () => {
   // Second set of chevrons (anchored to Unit2)
   const [showChevrons2, setShowChevrons2] = useState(false);
   const [showPerstepGrads, setShowPerstepGrads] = useState(false);
+  const [splitPerstepGrads, setSplitPerstepGrads] = useState(false);
+  const [shrinkPerstepGrads, setShrinkPerstepGrads] = useState(false);
+  const [translatePerstepGrads2, setTranslatePerstepGrads2] = useState(false);
   const [expandUnit2ParamsFinal, setExpandUnit2ParamsFinal] = useState(false);
 
   // Arrays controlling param expansions, Activations boxes, etc.
@@ -221,10 +224,43 @@ const ModelSplitAnimation = () => {
                                     // Then show perstepgrads after params expansion
                                     const perstepGradsTimer = setTimeout(() => {
                                       setShowPerstepGrads(true);
+
+                                      // After showing perstep grads, split them horizontally
+                                      const splitTimer = setTimeout(() => {
+                                        setSplitPerstepGrads(true);
+
+                                        // Then shrink their widths
+                                        const shrinkTimer = setTimeout(() => {
+                                          setShrinkPerstepGrads(true);
+
+                                          // After shrinking, translate Per step grads 2
+                                          const translateTimer = setTimeout(() => {
+                                            setTranslatePerstepGrads2(true);
+                                          }, 1000);
+
+                                          return () => {
+                                            clearTimeout(shrinkTimer);
+                                            clearTimeout(translateTimer);
+                                          };
+                                        }, 1000);
+
+                                        return () => {
+                                          clearTimeout(perstepGradsTimer);
+                                          clearTimeout(splitTimer);
+                                        };
+                                      }, 1000);
+
+                                      return () => {
+                                        [...prevTimers, ...fadeOutSequence].forEach(clearTimeout);
+                                        clearTimeout(finalFadeOutTimer);
+                                        clearTimeout(expandParamsFinalTimer);
+                                      };
                                     }, 1000);
 
                                     return () => {
-                                      clearTimeout(perstepGradsTimer);
+                                      [...prevTimers, ...fadeOutSequence].forEach(clearTimeout);
+                                      clearTimeout(finalFadeOutTimer);
+                                      clearTimeout(expandParamsFinalTimer);
                                     };
                                   }, 1000);
 
@@ -274,10 +310,10 @@ const ModelSplitAnimation = () => {
           return () => clearTimeout(halves0Timer);
         }, 1000);
 
-        return () => clearTimeout(gpuTimer);
+        return () => clearTimeout(shiftTimer);
       }, 1000);
 
-      return () => clearTimeout(shiftTimer);
+      return () => clearTimeout(splitTimer);
     }, 2000);
 
     // Cleanup on re-run
@@ -330,211 +366,248 @@ const ModelSplitAnimation = () => {
         </div>
       </div>
 
-      {/* GPUs Container: houses the GPU boxes and the splitted Unit structures */}
+      {/*
+        PARENT Container for both GPUs. 
+        We move the transform (scale, opacity) to *here* so that 
+        both GPUs remain in the same stacking context.
+      */}
       <div
-        className={`absolute top-1/2 transform -translate-y-1/2 flex flex-col space-y-8
-          transition-all duration-1000 ease-in-out`}
+        className={`
+          absolute top-1/2
+          transition-all duration-1000 ease-in-out
+          ${showGPUs ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}
+        `}
         style={{
           left: centerGPUs ? '50%' : '75%',
-          transform: `translate(-50%, -50%)`
+          transform: 'translate(-50%, -50%)'
         }}
       >
-        {[0, 1].map((gpuIndex) => (
-          <div
-            key={gpuIndex}
-            className={`h-72 border-2 border-black rounded-xl 
-              bg-white relative
-              transition-all duration-500 ease-in-out transform
-              ${showGPUs ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}
-            style={{
-              width: '520px',
-              transitionDelay: `${gpuIndex * 200}ms`
-            }}
-          >
-            <span className="absolute bottom-2 right-2 text-xl">GPU{gpuIndex}</span>
+        {/* Now nest the GPUs in a simple flex container WITH NO transform on each GPU */}
+        <div className="flex flex-col space-y-8">
+          {[0, 1].map((gpuIndex) => (
+            <div
+              key={gpuIndex}
+              className={`h-72 border-2 border-black rounded-xl 
+                bg-white relative
+                transition-all duration-500 ease-in-out
+                ${showGPUs ? 'opacity-100' : 'opacity-0'}`}
+              style={{
+                width: '520px',
+                transitionDelay: `${gpuIndex * 200}ms`
+                // No 'transform: scale(...)' here!
+              }}
+            >
+              <span className="absolute bottom-2 right-2 text-xl">GPU{gpuIndex}</span>
 
-            {/* Inside each GPU, place 3 Unit placeholders */}
-            <div className="w-full h-full p-4 flex justify-center items-center gap-8">
-              {[0, 1, 2].map((unitIndex) => (
-                <div key={unitIndex} className="w-32 h-40 relative">
-                  {/* Perstep grads box - only for Unit2 */}
-                  {unitIndex === 2 && (
+              {/* Inside each GPU, place 3 Unit placeholders */}
+              <div className="w-full h-full p-4 flex justify-center items-center gap-8">
+                {[0, 1, 2].map((unitIndex) => (
+                  <div key={unitIndex} className="w-32 h-40 relative">
+                    {/* Perstep grads box - only for Unit2 */}
+                    {unitIndex === 2 && (
+                      <>
+                        <div
+                          className="absolute border-2 border-solid border-black rounded-xl bg-white
+                            transition-all duration-500"
+                          style={{
+                            height: '25%',
+                            width: shrinkPerstepGrads ? '50%' : '100%',
+                            top: '-25%',
+                            left: 0,
+                            opacity: showPerstepGrads ? 1 : 0,
+                          }}
+                        >
+                          <span className="text-xs absolute top-1/2 left-1/2 
+                            -translate-x-1/2 -translate-y-1/2 whitespace-nowrap text-center"
+                          >
+                            Per step
+                            <br />
+                            grads 1
+                          </span>
+                        </div>
+                        <div
+                          className="absolute border-2 border-solid border-black rounded-xl bg-white
+                            transition-all duration-1000"
+                          style={{
+                            height: '25%',
+                            width: shrinkPerstepGrads ? '50%' : '100%',
+                            top: translatePerstepGrads2 && gpuIndex === 0 ? '280px' : '-25%',
+                            right: 0,
+                            opacity: showPerstepGrads ? 1 : 0,
+                            transform: translatePerstepGrads2 && gpuIndex === 0 ? 'translateY(0)' : 'none',
+                            zIndex: translatePerstepGrads2 ? (gpuIndex === 0 ? 10 : 30) : 'auto'
+                          }}
+                        >
+                          <span className="text-xs absolute top-1/2 left-1/2 
+                            -translate-x-1/2 -translate-y-1/2 whitespace-nowrap text-center"
+                          >
+                            Per step
+                            <br />
+                            grads 2
+                          </span>
+                        </div>
+                      </>
+                    )}
+
+                    {/* Label under each Unit */}
+                    <div
+                      className={`absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-sm
+                        transition-opacity duration-500 
+                        ${showInternalStructure ? 'opacity-100' : 'opacity-0'}`}
+                    >
+                      Unit{unitIndex}
+                    </div>
+
+                    {/* Activations box*/}
                     <div
                       className="absolute border-2 border-solid border-black rounded-xl bg-white
                         transition-all duration-500"
                       style={{
-                        height: '25%',
-                        width: '100%',
-                        top: '-25%',
-                        opacity: showPerstepGrads ? 1 : 0,
+                        top: '25%',
+                        height: 'calc(75%)',
+                        width: '64px',
+                        opacity: showActivationsBox[unitIndex] ? 1 : 0,
+                        right: gpuIndex === 1 ? 'auto' : 0,
+                        left: gpuIndex === 1 ? 0 : 'auto',
+                        transition: 'opacity 1000ms ease-in-out'
                       }}
                     >
                       <span className="text-xs absolute top-1/2 left-1/2 
                         -translate-x-1/2 -translate-y-1/2 whitespace-nowrap"
                       >
-                        Per step grads
+                        Act.
                       </span>
                     </div>
-                  )}
-
-                  {/* Label under each Unit */}
-                  <div
-                    className={`absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-sm
-                      transition-opacity duration-500 
-                      ${showInternalStructure ? 'opacity-100' : 'opacity-0'}`}
-                  >
-                    Unit{unitIndex}
-                  </div>
-
-                  {/* Activations box*/}
-                  <div
-                    className="absolute border-2 border-solid border-black rounded-xl bg-white
-                      transition-all duration-500"
-                    style={{
-                      top: '25%',
-                      height: 'calc(75%)',
-                      width: '64px',
-                      opacity: showActivationsBox[unitIndex] ? 1 : 0,
-                      right: gpuIndex === 1 ? 'auto' : 0,
-                      left: gpuIndex === 1 ? 0 : 'auto',
-                      transition: 'opacity 1000ms ease-in-out'
-                    }}
-                  >
-                    <span className="text-xs absolute top-1/2 left-1/2 
-                      -translate-x-1/2 -translate-y-1/2 whitespace-nowrap"
+          
+                    {/* Dashed box containing the chevrons */}
+                    <div
+                      className={`absolute top-0 w-full border-2 border-dashed border-black rounded-xl
+                        transition-all duration-500`}
+                      style={{
+                        height: showInternalStructure ? '25%' : '100%',
+                        opacity: showInternalStructure ? 1 : 1,
+                      }}
                     >
-                      Act.
-                    </span>
-                  </div>
-        
-                  {/* Dashed box containing the chevrons */}
-                  <div
-                    className={`absolute top-0 w-full border-2 border-dashed border-black rounded-xl
-                      transition-all duration-500`}
-                    style={{
-                      height: showInternalStructure ? '25%' : '100%',
-                      opacity: showInternalStructure ? 1 : 1,
-                    }}
-                  >
-                    {/* FIRST chevron set (Unit0) => Right-facing, normal fade/pulse order */}
-                    {unitIndex === 0 && (
-                      <div
-                        className="absolute top-1/2 right-44 transform -translate-y-1/2"
-                      >
-                        <AnimatedChevrons
-                          isVisible={showChevrons}
-                          fadeOutIndex={chevronFadeOutIndex}
-                          reverseFadeIn={false}      // normal fade order: left->right
-                          reverseArrowDir={false}    // right-facing arrows
-                          reversePulseOrder={false}  // leftmost arrow pulses first
-                        />
-                      </div>
-                    )}
-
-                    {/* SECOND chevron set (Unit2) => Left-facing, reversed fade/pulse */}
-                    {unitIndex === 2 && (
-                      <div
-                        className="absolute top-1/2 left-44 transform -translate-y-1/2"
-                      >
-                        <AnimatedChevrons
-                          isVisible={showChevrons2}
-                          fadeOutIndex={-1}
-                          reverseFadeIn={true}       // fade in right->left
-                          reverseArrowDir={true}     // left-facing arrows
-                          reversePulseOrder={true}   // rightmost arrow pulses first
-                          color="text-red-300"
-                        />
-                      </div>
-                    )}
-                  </div>
-
-                  {/* The "internal structure" box for Params, Grads, Opt states */}
-                  <div
-                    className={`absolute top-1/2 -translate-y-1/2 w-16 
-                      transition-all duration-500 ease-in-out flex flex-col
-                      ${
-                        (unitIndex === 0 && showHalvesUnit0) ||
-                        (unitIndex === 1 && showHalvesUnit1) ||
-                        (unitIndex === 2 && showHalvesUnit2)
-                          ? 'opacity-100'
-                          : 'opacity-0'
-                      }`}
-                    style={{
-                      left: gpuIndex === 0 ? '0px' : 'auto',
-                      right: gpuIndex === 1 ? '0px' : 'auto',
-                      height: '160px',
-                    }}
-                  >
-                    <div className="relative h-full w-full">
-                      {/* Params section */}
-                      <div
-                        className="absolute border-2 border-solid border-black rounded-xl bg-white
-                          transition-all duration-500"
-                        style={{
-                          height: 'calc(25%)',
-                          width:
-                            (expandParamsBox[unitIndex] && !shrinkParamsBox[unitIndex]) ||
-                            (unitIndex === 2 && expandUnit2ParamsFinal)
-                              ? '128px'
-                              : '100%',
-                          left: gpuIndex === 1 ? 'auto' : '0',
-                          right: gpuIndex === 1 ? '0' : 'auto',
-                          transform: `translateY(${showInternalStructure ? '0' : '50%'})`,
-                          opacity: showInternalStructure ? '1' : '0'
-                        }}
-                      >
-                        <span className="text-xs absolute top-1/2 left-1/2
-                          -translate-x-1/2 -translate-y-1/2"
+                      {/* FIRST chevron set (Unit0) => Right-facing, normal fade/pulse order */}
+                      {unitIndex === 0 && (
+                        <div
+                          className="absolute top-1/2 right-44 transform -translate-y-1/2"
                         >
-                          Params
-                        </span>
-                      </div>
+                          <AnimatedChevrons
+                            isVisible={showChevrons}
+                            fadeOutIndex={chevronFadeOutIndex}
+                            reverseFadeIn={false}
+                            reverseArrowDir={false}
+                            reversePulseOrder={false}
+                          />
+                        </div>
+                      )}
 
-                      {/* Grads section */}
-                      <div
-                        className="absolute w-full border-2 border-solid border-black rounded-xl bg-white
-                          transition-all duration-500"
-                        style={{
-                          top: '50%',
-                          height: showInternalStructure ? 'calc(25%)' : '100%',
-                          transform: `translate(0, ${
-                            showInternalStructure ? '-100%' : '-50%'
-                          })`,
-                          zIndex: showInternalStructure ? '0' : '1'
-                        }}
-                      >
-                        <span className="text-xs absolute top-1/2 left-1/2
-                          -translate-x-1/2 -translate-y-1/2"
+                      {/* SECOND chevron set (Unit2) => Left-facing, reversed fade/pulse */}
+                      {unitIndex === 2 && (
+                        <div
+                          className="absolute top-1/2 left-44 transform -translate-y-1/2"
                         >
-                          {showInternalStructure ? 'Grads' : `Unit${unitIndex}`}
-                        </span>
-                      </div>
+                          <AnimatedChevrons
+                            isVisible={showChevrons2}
+                            fadeOutIndex={-1}
+                            reverseFadeIn={true}
+                            reverseArrowDir={true}
+                            reversePulseOrder={true}
+                            color="text-red-300"
+                          />
+                        </div>
+                      )}
+                    </div>
 
-                      {/* Optimizer states section */}
-                      <div
-                        className="absolute w-full border-2 border-solid border-black rounded-xl bg-white
-                          transition-all duration-500"
-                        style={{
-                          height: '50%',
-                          transform: `translateY(${showInternalStructure ? '100%' : '50%'})`,
-                          opacity: showInternalStructure ? '1' : '0'
-                        }}
-                      >
-                        <span className="text-xs absolute top-1/2 left-1/2
-                          -translate-x-1/2 -translate-y-1/2 text-center"
+                    {/* The "internal structure" box for Params, Grads, Opt states */}
+                    <div
+                      className={`absolute top-1/2 -translate-y-1/2 w-16 
+                        transition-all duration-500 ease-in-out flex flex-col
+                        ${
+                          (unitIndex === 0 && showHalvesUnit0) ||
+                          (unitIndex === 1 && showHalvesUnit1) ||
+                          (unitIndex === 2 && showHalvesUnit2)
+                            ? 'opacity-100'
+                            : 'opacity-0'
+                        }`}
+                      style={{
+                        left: gpuIndex === 0 ? '0px' : 'auto',
+                        right: gpuIndex === 1 ? '0px' : 'auto',
+                        height: '160px',
+                      }}
+                    >
+                      <div className="relative h-full w-full">
+                        {/* Params section */}
+                        <div
+                          className="absolute border-2 border-solid border-black rounded-xl bg-white
+                            transition-all duration-500"
+                          style={{
+                            height: 'calc(25%)',
+                            width:
+                              (expandParamsBox[unitIndex] && !shrinkParamsBox[unitIndex]) ||
+                              (unitIndex === 2 && expandUnit2ParamsFinal)
+                                ? '128px'
+                                : '100%',
+                            left: gpuIndex === 1 ? 'auto' : '0',
+                            right: gpuIndex === 1 ? '0' : 'auto',
+                            transform: `translateY(${showInternalStructure ? '0' : '50%'})`,
+                            opacity: showInternalStructure ? '1' : '0'
+                          }}
                         >
-                          Opt.
-                          <br />
-                          states
-                        </span>
+                          <span className="text-xs absolute top-1/2 left-1/2
+                            -translate-x-1/2 -translate-y-1/2"
+                          >
+                            Params
+                          </span>
+                        </div>
+
+                        {/* Grads section */}
+                        <div
+                          className="absolute w-full border-2 border-solid border-black rounded-xl bg-white
+                            transition-all duration-500"
+                          style={{
+                            top: '50%',
+                            height: showInternalStructure ? 'calc(25%)' : '100%',
+                            transform: `translate(0, ${
+                              showInternalStructure ? '-100%' : '-50%'
+                            })`,
+                            zIndex: showInternalStructure ? '0' : '1'
+                          }}
+                        >
+                          <span className="text-xs absolute top-1/2 left-1/2
+                            -translate-x-1/2 -translate-y-1/2"
+                          >
+                            {showInternalStructure ? 'Grads' : `Unit${unitIndex}`}
+                          </span>
+                        </div>
+
+                        {/* Optimizer states section */}
+                        <div
+                          className="absolute w-full border-2 border-solid border-black rounded-xl bg-white
+                            transition-all duration-500"
+                          style={{
+                            height: '50%',
+                            transform: `translateY(${showInternalStructure ? '100%' : '50%'})`,
+                            opacity: showInternalStructure ? '1' : '0'
+                          }}
+                        >
+                          <span className="text-xs absolute top-1/2 left-1/2
+                            -translate-x-1/2 -translate-y-1/2 text-center"
+                          >
+                            Opt.
+                            <br />
+                            states
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
 
       {/* Reset Button */}
@@ -550,6 +623,9 @@ const ModelSplitAnimation = () => {
           setShowInternalStructure(false);
           setCenterGPUs(false);
           setShowPerstepGrads(false);
+          setSplitPerstepGrads(false);
+          setShrinkPerstepGrads(false);
+          setTranslatePerstepGrads2(false);
           setExpandUnit2ParamsFinal(false);
 
           // First chevron set
