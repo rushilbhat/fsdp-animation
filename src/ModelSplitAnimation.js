@@ -120,6 +120,7 @@ const ModelSplitAnimation = () => {
   const [showHalvesUnit2, setShowHalvesUnit2] = useState(false);
   const [centerGPUs, setCenterGPUs] = useState(false);
   const [showInternalStructure, setShowInternalStructure] = useState(false);
+  const [showTemporaryGlow, setShowTemporaryGlow] = useState(false);
 
   // First set of chevrons (anchored to Unit0)
   const [showChevrons, setShowChevrons] = useState(false);
@@ -140,6 +141,25 @@ const ModelSplitAnimation = () => {
 
   // Trigger to restart the entire sequence
   const [shouldReset, setShouldReset] = useState(false);
+
+  // Watch for translatePerstepGrads2 changes to trigger the temporary glow
+  useEffect(() => {
+    if (translatePerstepGrads2) {
+      // Wait for translation to complete before showing glow
+      const showGlowTimer = setTimeout(() => {
+        setShowTemporaryGlow(true);
+        
+        // Hide glow after 1 second
+        const hideGlowTimer = setTimeout(() => {
+          setShowTemporaryGlow(false);
+        }, 1000);
+        
+        return () => clearTimeout(hideGlowTimer);
+      }, 300);
+      
+      return () => clearTimeout(showGlowTimer);
+    }
+  }, [translatePerstepGrads2]);
 
   useEffect(() => {
     // Start the entire sequence after a short delay
@@ -431,11 +451,18 @@ const ModelSplitAnimation = () => {
                           style={{
                             height: '25%',
                             width: shrinkPerstepGrads ? '50%' : '100%',
-                            top: translatePerstepGrads2 && gpuIndex === 0 ? '280px' : '-25%',
+                            top: '-25%',
                             right: 0,
-                            opacity: showPerstepGrads ? 1 : 0,
-                            transform: translatePerstepGrads2 && gpuIndex === 0 ? 'translateY(0)' : 'none',
-                            zIndex: translatePerstepGrads2 ? (gpuIndex === 0 ? 10 : 30) : 'auto'
+                            opacity: showPerstepGrads 
+                              ? (translatePerstepGrads2 && gpuIndex === 0 ? 0.3 : 1)
+                              : 0,
+                            transform: translatePerstepGrads2 && gpuIndex === 0 
+                              ? 'translateY(320px) scale(0.9)' 
+                              : 'none',
+                            zIndex: translatePerstepGrads2 ? (gpuIndex === 0 ? 10 : 30) : 'auto',
+                            backgroundColor: (translatePerstepGrads2 && gpuIndex === 1 && showTemporaryGlow)
+                              ? 'rgba(255, 200, 200, 0.9)'
+                              : 'white'
                           }}
                         >
                           <span className="text-xs absolute top-1/2 left-1/2 
