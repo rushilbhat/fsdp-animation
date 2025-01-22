@@ -121,6 +121,7 @@ const ModelSplitAnimation = () => {
   const [centerGPUs, setCenterGPUs] = useState(false);
   const [showInternalStructure, setShowInternalStructure] = useState(false);
   const [showTemporaryGlow, setShowTemporaryGlow] = useState(false);
+  const [showTemporaryGlow1, setShowTemporaryGlow1] = useState(false);
 
   // First set of chevrons (anchored to Unit0)
   const [showChevrons, setShowChevrons] = useState(false);
@@ -132,6 +133,7 @@ const ModelSplitAnimation = () => {
   const [splitPerstepGrads, setSplitPerstepGrads] = useState(false);
   const [shrinkPerstepGrads, setShrinkPerstepGrads] = useState(false);
   const [translatePerstepGrads2, setTranslatePerstepGrads2] = useState(false);
+  const [translatePerstepGrads1, setTranslatePerstepGrads1] = useState(false);
   const [expandUnit2ParamsFinal, setExpandUnit2ParamsFinal] = useState(false);
 
   // Arrays controlling param expansions, Activations boxes, etc.
@@ -141,6 +143,25 @@ const ModelSplitAnimation = () => {
 
   // Trigger to restart the entire sequence
   const [shouldReset, setShouldReset] = useState(false);
+
+  // Watch for translatePerstepGrads1 changes to trigger the temporary glow
+  useEffect(() => {
+    if (translatePerstepGrads1) {
+      // Wait for translation to complete before showing glow
+      const showGlowTimer = setTimeout(() => {
+        setShowTemporaryGlow1(true);
+        
+        // Hide glow after 1 second
+        const hideGlowTimer = setTimeout(() => {
+          setShowTemporaryGlow1(false);
+        }, 1000);
+        
+        return () => clearTimeout(hideGlowTimer);
+      }, 300);
+      
+      return () => clearTimeout(showGlowTimer);
+    }
+  }, [translatePerstepGrads1]);
 
   // Watch for translatePerstepGrads2 changes to trigger the temporary glow
   useEffect(() => {
@@ -256,6 +277,7 @@ const ModelSplitAnimation = () => {
                                           // After shrinking, translate Per step grads 2
                                           const translateTimer = setTimeout(() => {
                                             setTranslatePerstepGrads2(true);
+                                            setTranslatePerstepGrads1(true);
                                           }, 1000);
 
                                           return () => {
@@ -387,7 +409,7 @@ const ModelSplitAnimation = () => {
       </div>
 
       {/*
-        PARENT Container for both GPUs. 
+        PARENT container for both GPUs. 
         We move the transform (scale, opacity) to *here* so that 
         both GPUs remain in the same stacking context.
       */}
@@ -428,13 +450,22 @@ const ModelSplitAnimation = () => {
                       <>
                         <div
                           className="absolute border-2 border-solid border-black rounded-xl bg-white
-                            transition-all duration-500"
+                            transition-all duration-1000"
                           style={{
                             height: '25%',
                             width: shrinkPerstepGrads ? '50%' : '100%',
                             top: '-25%',
                             left: 0,
-                            opacity: showPerstepGrads ? 1 : 0,
+                            opacity: showPerstepGrads 
+                              ? (translatePerstepGrads1 && gpuIndex === 1 ? 0.3 : 1)
+                              : 0,
+                            transform: translatePerstepGrads1 && gpuIndex === 1
+                              ? 'translateY(-320px) scale(0.9)'
+                              : 'none',
+                            zIndex: translatePerstepGrads1 ? (gpuIndex === 1 ? 10 : 30) : 'auto',
+                            backgroundColor: (translatePerstepGrads1 && gpuIndex === 0 && showTemporaryGlow1)
+                              ? 'rgba(255, 200, 200, 0.9)'
+                              : 'white'
                           }}
                         >
                           <span className="text-xs absolute top-1/2 left-1/2 
@@ -653,6 +684,7 @@ const ModelSplitAnimation = () => {
           setSplitPerstepGrads(false);
           setShrinkPerstepGrads(false);
           setTranslatePerstepGrads2(false);
+          setTranslatePerstepGrads1(false);
           setExpandUnit2ParamsFinal(false);
 
           // First chevron set
@@ -669,6 +701,10 @@ const ModelSplitAnimation = () => {
 
           // Trigger the entire sequence again
           setShouldReset((prev) => !prev);
+
+          // Reset temporary glows
+          setShowTemporaryGlow(false);
+          setShowTemporaryGlow1(false);
         }}
         className="absolute bottom-4 left-1/2 transform -translate-x-1/2 
           px-4 py-2 bg-blue-500 text-white rounded-xl hover:bg-blue-600
