@@ -134,6 +134,9 @@ const ModelSplitAnimation = () => {
   const [shrinkPerstepGrads, setShrinkPerstepGrads] = useState(false);
   const [translatePerstepGrads2, setTranslatePerstepGrads2] = useState(false);
   const [translatePerstepGrads1, setTranslatePerstepGrads1] = useState(false);
+  const [hideGpu1Perstep1, setHideGpu1Perstep1] = useState(false);
+  const [hideGpu0Perstep2, setHideGpu0Perstep2] = useState(false);
+  const [finalTranslatePerstep1, setFinalTranslatePerstep1] = useState(false);
   const [expandUnit2ParamsFinal, setExpandUnit2ParamsFinal] = useState(false);
 
   // Arrays controlling param expansions, Activations boxes, etc.
@@ -154,6 +157,8 @@ const ModelSplitAnimation = () => {
         // Hide glow after 1 second
         const hideGlowTimer = setTimeout(() => {
           setShowTemporaryGlow1(false);
+          // Hide the GPU1 perstep1 box after glow fades
+          setHideGpu1Perstep1(true);
         }, 1000);
         
         return () => clearTimeout(hideGlowTimer);
@@ -173,6 +178,15 @@ const ModelSplitAnimation = () => {
         // Hide glow after 1 second
         const hideGlowTimer = setTimeout(() => {
           setShowTemporaryGlow(false);
+          // Hide the GPU0 perstep2 box after glow fades
+          setHideGpu0Perstep2(true);
+
+          // Start the final transition after a delay
+          const finalTransitionTimer = setTimeout(() => {
+            setFinalTranslatePerstep1(true);
+          }, 500);
+
+          return () => clearTimeout(finalTransitionTimer);
         }, 1000);
         
         return () => clearTimeout(hideGlowTimer);
@@ -456,12 +470,12 @@ const ModelSplitAnimation = () => {
                             width: shrinkPerstepGrads ? '50%' : '100%',
                             top: '-25%',
                             left: 0,
-                            opacity: showPerstepGrads 
-                              ? (translatePerstepGrads1 && gpuIndex === 1 ? 0.3 : 1)
-                              : 0,
-                            transform: translatePerstepGrads1 && gpuIndex === 1
-                              ? 'translateY(-320px) scale(0.9)'
-                              : 'none',
+                            opacity: gpuIndex === 1 && hideGpu1Perstep1 ? 0 : (showPerstepGrads ? 1 : 0),
+                            transform: finalTranslatePerstep1 && gpuIndex === 0
+                              ? 'translateY(80px) scale(0.9)'
+                              : (translatePerstepGrads1 && gpuIndex === 1
+                                ? 'translateY(-320px) scale(0.9)'
+                                : 'none'),
                             zIndex: translatePerstepGrads1 ? (gpuIndex === 1 ? 10 : 30) : 'auto',
                             backgroundColor: (translatePerstepGrads1 && gpuIndex === 0 && showTemporaryGlow1)
                               ? 'rgba(255, 200, 200, 0.9)'
@@ -484,9 +498,7 @@ const ModelSplitAnimation = () => {
                             width: shrinkPerstepGrads ? '50%' : '100%',
                             top: '-25%',
                             right: 0,
-                            opacity: showPerstepGrads 
-                              ? (translatePerstepGrads2 && gpuIndex === 0 ? 0.3 : 1)
-                              : 0,
+                            opacity: gpuIndex === 0 && hideGpu0Perstep2 ? 0 : (showPerstepGrads ? 1 : 0),
                             transform: translatePerstepGrads2 && gpuIndex === 0 
                               ? 'translateY(320px) scale(0.9)' 
                               : 'none',
@@ -685,6 +697,9 @@ const ModelSplitAnimation = () => {
           setShrinkPerstepGrads(false);
           setTranslatePerstepGrads2(false);
           setTranslatePerstepGrads1(false);
+          setHideGpu1Perstep1(false);
+          setHideGpu0Perstep2(false);
+          setFinalTranslatePerstep1(false);
           setExpandUnit2ParamsFinal(false);
 
           // First chevron set
