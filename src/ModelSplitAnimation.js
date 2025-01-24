@@ -122,6 +122,7 @@ const ModelSplitAnimation = () => {
   const [showInternalStructure, setShowInternalStructure] = useState(false);
   const [showTemporaryGlow, setShowTemporaryGlow] = useState(false);
   const [showTemporaryGlow1, setShowTemporaryGlow1] = useState(false);
+  const [showTemporaryGlowUnit2Grads, setShowTemporaryGlowUnit2Grads] = useState(false);
 
   // First set of chevrons (anchored to Unit0)
   const [showChevrons, setShowChevrons] = useState(false);
@@ -195,6 +196,25 @@ const ModelSplitAnimation = () => {
       return () => clearTimeout(showGlowTimer);
     }
   }, [translatePerstepGrads2]);
+
+  // Watch for finalTranslatePerstep1 changes to trigger the temporary glow on Unit2 grads
+  useEffect(() => {
+    if (finalTranslatePerstep1) {
+      // Wait for translation to complete before showing glow
+      const showGlowTimer = setTimeout(() => {
+        setShowTemporaryGlowUnit2Grads(true);
+        
+        // Hide glow after 1 second
+        const hideGlowTimer = setTimeout(() => {
+          setShowTemporaryGlowUnit2Grads(false);
+        }, 1000);
+        
+        return () => clearTimeout(hideGlowTimer);
+      }, 300);
+      
+      return () => clearTimeout(showGlowTimer);
+    }
+  }, [finalTranslatePerstep1]);
 
   useEffect(() => {
     // Start the entire sequence after a short delay
@@ -363,7 +383,7 @@ const ModelSplitAnimation = () => {
             return () => clearTimeout(halves1Timer);
           }, 700);
 
-          return () => clearTimeout(halves0Timer);
+          return () => clearTimeout(gpuTimer);
         }, 1000);
 
         return () => clearTimeout(shiftTimer);
@@ -424,8 +444,9 @@ const ModelSplitAnimation = () => {
 
       {/*
         PARENT container for both GPUs. 
-        We move the transform (scale, opacity) to *here* so that 
-        both GPUs remain in the same stacking context.
+        We keep the scale/opacity transitions here, but be mindful not to 
+        introduce an extra transform that would isolate stacking context away 
+        from the per-step grads or the internal boxes.
       */}
       <div
         className={`
@@ -435,10 +456,13 @@ const ModelSplitAnimation = () => {
         `}
         style={{
           left: centerGPUs ? '50%' : '75%',
+          // We keep "translate(-50%, -50%)" for overall centering of this block
+          // which is fine, because both the "per step grads" and "Params/Grads/Opt" 
+          // are inside this same transform (same parent).
           transform: 'translate(-50%, -50%)'
         }}
       >
-        {/* Now nest the GPUs in a simple flex container WITH NO transform on each GPU */}
+        {/* Now nest the GPUs in a simple flex container */}
         <div className="flex flex-col space-y-8">
           {[0, 1].map((gpuIndex) => (
             <div
@@ -450,7 +474,6 @@ const ModelSplitAnimation = () => {
               style={{
                 width: '520px',
                 transitionDelay: `${gpuIndex * 200}ms`
-                // No 'transform: scale(...)' here!
               }}
             >
               <span className="absolute bottom-2 right-2 text-xl">GPU{gpuIndex}</span>
@@ -478,7 +501,7 @@ const ModelSplitAnimation = () => {
                                 : 'none'),
                             zIndex: translatePerstepGrads1 ? (gpuIndex === 1 ? 10 : 30) : 'auto',
                             backgroundColor: (translatePerstepGrads1 && gpuIndex === 0 && showTemporaryGlow1)
-                              ? 'rgba(255, 200, 200, 0.9)'
+                              ? 'rgba(255, 200, 200, 1)'
                               : 'white'
                           }}
                         >
@@ -504,7 +527,7 @@ const ModelSplitAnimation = () => {
                               : 'none',
                             zIndex: translatePerstepGrads2 ? (gpuIndex === 0 ? 10 : 30) : 'auto',
                             backgroundColor: (translatePerstepGrads2 && gpuIndex === 1 && showTemporaryGlow)
-                              ? 'rgba(255, 200, 200, 0.9)'
+                              ? 'rgba(255, 200, 200, 1)'
                               : 'white'
                           }}
                         >
@@ -590,10 +613,14 @@ const ModelSplitAnimation = () => {
                       )}
                     </div>
 
-                    {/* The "internal structure" box for Params, Grads, Opt states */}
+                    {/* 
+                      The "internal structure" box for Params, Grads, Opt states.
+                      CHANGED HERE: we remove the `transform` from this container itself
+                      and rely on simpler positioning (top + negative margin) so that
+                      it remains in the same stacking context as the "per step grads."
+                    */}
                     <div
-                      className={`absolute top-1/2 -translate-y-1/2 w-16 
-                        transition-all duration-500 ease-in-out flex flex-col
+                      className={`absolute w-16 transition-all duration-500 ease-in-out flex flex-col
                         ${
                           (unitIndex === 0 && showHalvesUnit0) ||
                           (unitIndex === 1 && showHalvesUnit1) ||
@@ -602,6 +629,10 @@ const ModelSplitAnimation = () => {
                             : 'opacity-0'
                         }`}
                       style={{
+                        // Instead of top-1/2 + transform(-translate-y-1/2):
+                        // we do top: "50%" and marginTop: half the box height negative
+                        top: '50%',
+                        marginTop: '-80px', // half of 160px
                         left: gpuIndex === 0 ? '0px' : 'auto',
                         right: gpuIndex === 1 ? '0px' : 'auto',
                         height: '160px',
@@ -621,6 +652,8 @@ const ModelSplitAnimation = () => {
                                 : '100%',
                             left: gpuIndex === 1 ? 'auto' : '0',
                             right: gpuIndex === 1 ? '0' : 'auto',
+                            // Moved "transform" for show/hide from the containing div;
+                            // The transitions inside remain intact.
                             transform: `translateY(${showInternalStructure ? '0' : '50%'})`,
                             opacity: showInternalStructure ? '1' : '0'
                           }}
@@ -642,7 +675,10 @@ const ModelSplitAnimation = () => {
                             transform: `translate(0, ${
                               showInternalStructure ? '-100%' : '-50%'
                             })`,
-                            zIndex: showInternalStructure ? '0' : '1'
+                            zIndex: finalTranslatePerstep1 && gpuIndex === 0 ? 40 : 'auto',
+                            backgroundColor: (finalTranslatePerstep1 && gpuIndex === 0 && unitIndex === 2 && showTemporaryGlowUnit2Grads)
+                              ? 'rgba(255, 200, 200, 1)'
+                              : 'white'
                           }}
                         >
                           <span className="text-xs absolute top-1/2 left-1/2
@@ -672,6 +708,7 @@ const ModelSplitAnimation = () => {
                         </div>
                       </div>
                     </div>
+                    {/* END CHANGE */}
                   </div>
                 ))}
               </div>
@@ -720,6 +757,7 @@ const ModelSplitAnimation = () => {
           // Reset temporary glows
           setShowTemporaryGlow(false);
           setShowTemporaryGlow1(false);
+          setShowTemporaryGlowUnit2Grads(false);
         }}
         className="absolute bottom-4 left-1/2 transform -translate-x-1/2 
           px-4 py-2 bg-blue-500 text-white rounded-xl hover:bg-blue-600
