@@ -115,6 +115,7 @@ const ModelSplitAnimation = () => {
   const [showTemporaryGlow1, setShowTemporaryGlow1] = useState(false);
   const [showTemporaryGlowUnit2Grads, setShowTemporaryGlowUnit2Grads] = useState(false);
   const [showTemporaryGlowUnit2GradsGpu1, setShowTemporaryGlowUnit2GradsGpu1] = useState(false);
+  const [hideUnit2Activations, setHideUnit2Activations] = useState(false);
 
   // First set of chevrons (anchored to Unit0)
   const [showChevrons, setShowChevrons] = useState(false);
@@ -219,6 +220,17 @@ const ModelSplitAnimation = () => {
         clearTimeout(showGlowTimerGpu0);
         clearTimeout(showGlowTimerGpu1);
       };
+    }
+  }, [finalTranslatePerstep]);
+
+  // Effect to hide Unit 2 activations after final translate
+  useEffect(() => {
+    if (finalTranslatePerstep) {
+      const hideActivationsTimer = setTimeout(() => {
+        setHideUnit2Activations(true);
+      }, 1500); // Delay after the final translate and glow effects
+
+      return () => clearTimeout(hideActivationsTimer);
     }
   }, [finalTranslatePerstep]);
 
@@ -591,7 +603,11 @@ const ModelSplitAnimation = () => {
                         top: '25%',
                         height: 'calc(75%)',
                         width: '64px',
-                        opacity: showActivationsBox[unitIndex] ? 1 : 0,
+                        opacity: unitIndex === 2 && hideUnit2Activations 
+                          ? 0 
+                          : showActivationsBox[unitIndex] 
+                            ? 1 
+                            : 0,
                         right: gpuIndex === 1 ? 'auto' : 0,
                         left: gpuIndex === 1 ? 0 : 'auto',
                         transition: 'opacity 1000ms ease-in-out'
@@ -795,6 +811,7 @@ const ModelSplitAnimation = () => {
           setShowTemporaryGlow1(false);
           setShowTemporaryGlowUnit2Grads(false);
           setShowTemporaryGlowUnit2GradsGpu1(false);
+          setHideUnit2Activations(false);
         }}
         className="absolute bottom-4 left-1/2 transform -translate-x-1/2 
           px-4 py-2 bg-blue-500 text-white rounded-xl hover:bg-blue-600
