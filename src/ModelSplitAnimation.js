@@ -2,12 +2,8 @@ import React, { useState, useEffect } from 'react';
 
 /**
  * A single chevron arrow that "pulses".
- *  - pulseDelay: milliseconds delay before pulse animation starts
- *  - reverseArrowDir: if true, points the arrow left instead of right
  */
 const FatChevron = ({ pulseDelay, reverseArrowDir = false, color = "text-blue-300" }) => {
-  // Original path (right-facing arrow): "M4 4 L18 12 L4 20"
-  // Reversed path (left-facing arrow):  "M20 4 L6 12 L20 20"
   const chevronPath = reverseArrowDir
     ? "M20 4 L6 12 L20 20"
     : "M4 4 L18 12 L4 20";
@@ -31,7 +27,7 @@ const FatChevron = ({ pulseDelay, reverseArrowDir = false, color = "text-blue-30
             opacity: 1;
           }
           50% {
-            opacity: .5;
+            opacity: 0.5;
           }
         }
       `}</style>
@@ -47,11 +43,6 @@ const FatChevron = ({ pulseDelay, reverseArrowDir = false, color = "text-blue-30
 
 /**
  * AnimatedChevrons
- *  - isVisible: toggles the sequential fade-in of the 3 chevrons
- *  - fadeOutIndex: controls which chevron indices are faded out (-1 => none)
- *  - reverseFadeIn: if true, fade them in from right->left instead of left->right
- *  - reverseArrowDir: if true, draws the arrows left-facing instead of right-facing
- *  - reversePulseOrder: if true, the rightmost arrow pulses first, leftmost last
  */
 const AnimatedChevrons = ({
   isVisible,
@@ -123,6 +114,7 @@ const ModelSplitAnimation = () => {
   const [showTemporaryGlow, setShowTemporaryGlow] = useState(false);
   const [showTemporaryGlow1, setShowTemporaryGlow1] = useState(false);
   const [showTemporaryGlowUnit2Grads, setShowTemporaryGlowUnit2Grads] = useState(false);
+  const [showTemporaryGlowUnit2GradsGpu1, setShowTemporaryGlowUnit2GradsGpu1] = useState(false);
 
   // First set of chevrons (anchored to Unit0)
   const [showChevrons, setShowChevrons] = useState(false);
@@ -137,7 +129,13 @@ const ModelSplitAnimation = () => {
   const [translatePerstepGrads1, setTranslatePerstepGrads1] = useState(false);
   const [hideGpu1Perstep1, setHideGpu1Perstep1] = useState(false);
   const [hideGpu0Perstep2, setHideGpu0Perstep2] = useState(false);
-  const [finalTranslatePerstep1, setFinalTranslatePerstep1] = useState(false);
+
+  /**
+   *  ---- CHANGED HERE: Instead of having finalTranslatePerstep1 and finalTranslatePerstep2,
+   *       we have ONE state that handles the "final" translate for both GPU0 and GPU1.
+   */
+  const [finalTranslatePerstep, setFinalTranslatePerstep] = useState(false);
+
   const [expandUnit2ParamsFinal, setExpandUnit2ParamsFinal] = useState(false);
 
   // Arrays controlling param expansions, Activations boxes, etc.
@@ -148,17 +146,14 @@ const ModelSplitAnimation = () => {
   // Trigger to restart the entire sequence
   const [shouldReset, setShouldReset] = useState(false);
 
-  // Watch for translatePerstepGrads1 changes to trigger the temporary glow
+  // Watch for translatePerstepGrads1 changes to trigger the temporary glow (GPU1, per-step grads 1)
   useEffect(() => {
     if (translatePerstepGrads1) {
-      // Wait for translation to complete before showing glow
       const showGlowTimer = setTimeout(() => {
         setShowTemporaryGlow1(true);
         
-        // Hide glow after 1 second
         const hideGlowTimer = setTimeout(() => {
           setShowTemporaryGlow1(false);
-          // Hide the GPU1 perstep1 box after glow fades
           setHideGpu1Perstep1(true);
         }, 1000);
         
@@ -169,22 +164,21 @@ const ModelSplitAnimation = () => {
     }
   }, [translatePerstepGrads1]);
 
-  // Watch for translatePerstepGrads2 changes to trigger the temporary glow
+  // Watch for translatePerstepGrads2 changes to trigger the temporary glow (GPU0, per-step grads 2)
   useEffect(() => {
     if (translatePerstepGrads2) {
-      // Wait for translation to complete before showing glow
       const showGlowTimer = setTimeout(() => {
         setShowTemporaryGlow(true);
         
-        // Hide glow after 1 second
         const hideGlowTimer = setTimeout(() => {
           setShowTemporaryGlow(false);
-          // Hide the GPU0 perstep2 box after glow fades
           setHideGpu0Perstep2(true);
 
           // Start the final transition after a delay
           const finalTransitionTimer = setTimeout(() => {
-            setFinalTranslatePerstep1(true);
+            // Instead of finalTranslatePerstep1 and finalTranslatePerstep2, 
+            // we just flip one boolean:
+            setFinalTranslatePerstep(true);
           }, 500);
 
           return () => clearTimeout(finalTransitionTimer);
@@ -197,24 +191,36 @@ const ModelSplitAnimation = () => {
     }
   }, [translatePerstepGrads2]);
 
-  // Watch for finalTranslatePerstep1 changes to trigger the temporary glow on Unit2 grads
+  /**
+   * CHANGED HERE: Single effect that watches `finalTranslatePerstep`.
+   * Triggers the "temporary glow" on Unit2 grads for both GPU0 and GPU1.
+   */
   useEffect(() => {
-    if (finalTranslatePerstep1) {
-      // Wait for translation to complete before showing glow
-      const showGlowTimer = setTimeout(() => {
+    if (finalTranslatePerstep) {
+      // Delay before showing GPU0 glow
+      const showGlowTimerGpu0 = setTimeout(() => {
         setShowTemporaryGlowUnit2Grads(true);
-        
-        // Hide glow after 1 second
-        const hideGlowTimer = setTimeout(() => {
+        const hideGlowTimerGpu0 = setTimeout(() => {
           setShowTemporaryGlowUnit2Grads(false);
         }, 1000);
-        
-        return () => clearTimeout(hideGlowTimer);
+        return () => clearTimeout(hideGlowTimerGpu0);
       }, 300);
-      
-      return () => clearTimeout(showGlowTimer);
+
+      // Delay before showing GPU1 glow
+      const showGlowTimerGpu1 = setTimeout(() => {
+        setShowTemporaryGlowUnit2GradsGpu1(true);
+        const hideGlowTimerGpu1 = setTimeout(() => {
+          setShowTemporaryGlowUnit2GradsGpu1(false);
+        }, 1000);
+        return () => clearTimeout(hideGlowTimerGpu1);
+      }, 300);
+
+      return () => {
+        clearTimeout(showGlowTimerGpu0);
+        clearTimeout(showGlowTimerGpu1);
+      };
     }
-  }, [finalTranslatePerstep1]);
+  }, [finalTranslatePerstep]);
 
   useEffect(() => {
     // Start the entire sequence after a short delay
@@ -398,7 +404,7 @@ const ModelSplitAnimation = () => {
 
   return (
     <div className="w-full h-screen relative">
-      {/* Units Container: houses the 3 "Unit" boxes before splitting */}
+      {/* Units Container */}
       <div
         className={`absolute top-1/2 transform -translate-y-1/2 transition-all duration-700
           ${centerGPUs ? 'opacity-0' : 'opacity-100'}`}
@@ -442,12 +448,7 @@ const ModelSplitAnimation = () => {
         </div>
       </div>
 
-      {/*
-        PARENT container for both GPUs. 
-        We keep the scale/opacity transitions here, but be mindful not to 
-        introduce an extra transform that would isolate stacking context away 
-        from the per-step grads or the internal boxes.
-      */}
+      {/* PARENT container for both GPUs */}
       <div
         className={`
           absolute top-1/2
@@ -456,13 +457,9 @@ const ModelSplitAnimation = () => {
         `}
         style={{
           left: centerGPUs ? '50%' : '75%',
-          // We keep "translate(-50%, -50%)" for overall centering of this block
-          // which is fine, because both the "per step grads" and "Params/Grads/Opt" 
-          // are inside this same transform (same parent).
           transform: 'translate(-50%, -50%)'
         }}
       >
-        {/* Now nest the GPUs in a simple flex container */}
         <div className="flex flex-col space-y-8">
           {[0, 1].map((gpuIndex) => (
             <div
@@ -482,9 +479,10 @@ const ModelSplitAnimation = () => {
               <div className="w-full h-full p-4 flex justify-center items-center gap-8">
                 {[0, 1, 2].map((unitIndex) => (
                   <div key={unitIndex} className="w-32 h-40 relative">
-                    {/* Perstep grads box - only for Unit2 */}
+                    {/* Per-step grads box - only for Unit2 */}
                     {unitIndex === 2 && (
                       <>
+                        {/* Per-step grads 1 */}
                         <div
                           className="absolute border-2 border-solid border-black rounded-xl bg-white
                             transition-all duration-1000"
@@ -493,16 +491,31 @@ const ModelSplitAnimation = () => {
                             width: shrinkPerstepGrads ? '50%' : '100%',
                             top: '-25%',
                             left: 0,
-                            opacity: gpuIndex === 1 && hideGpu1Perstep1 ? 0 : (showPerstepGrads ? 1 : 0),
-                            transform: finalTranslatePerstep1 && gpuIndex === 0
-                              ? 'translateY(80px) scale(0.9)'
-                              : (translatePerstepGrads1 && gpuIndex === 1
+                            opacity:
+                              gpuIndex === 1 && hideGpu1Perstep1
+                                ? 0
+                                : showPerstepGrads
+                                ? 1
+                                : 0,
+                            transform:
+                              // normal "pull up" for GPU1
+                              translatePerstepGrads1 && gpuIndex === 1
                                 ? 'translateY(-320px) scale(0.9)'
-                                : 'none'),
-                            zIndex: translatePerstepGrads1 ? (gpuIndex === 1 ? 10 : 30) : 'auto',
-                            backgroundColor: (translatePerstepGrads1 && gpuIndex === 0 && showTemporaryGlow1)
-                              ? 'rgba(255, 200, 200, 1)'
-                              : 'white'
+                                : // final short nudge for GPU0 if finalTranslatePerstep is on
+                                finalTranslatePerstep && gpuIndex === 0
+                                ? 'translateY(80px) scale(0.9)'
+                                : 'none',
+                            zIndex: translatePerstepGrads1
+                              ? gpuIndex === 1
+                                ? 10
+                                : 30
+                              : 'auto',
+                            backgroundColor:
+                              translatePerstepGrads1 &&
+                              gpuIndex === 0 &&
+                              showTemporaryGlow1
+                                ? 'rgba(255, 200, 200, 1)'
+                                : 'white'
                           }}
                         >
                           <span className="text-xs absolute top-1/2 left-1/2 
@@ -513,6 +526,8 @@ const ModelSplitAnimation = () => {
                             grads 1
                           </span>
                         </div>
+
+                        {/* Per-step grads 2 */}
                         <div
                           className="absolute border-2 border-solid border-black rounded-xl bg-white
                             transition-all duration-1000"
@@ -521,14 +536,31 @@ const ModelSplitAnimation = () => {
                             width: shrinkPerstepGrads ? '50%' : '100%',
                             top: '-25%',
                             right: 0,
-                            opacity: gpuIndex === 0 && hideGpu0Perstep2 ? 0 : (showPerstepGrads ? 1 : 0),
-                            transform: translatePerstepGrads2 && gpuIndex === 0 
-                              ? 'translateY(320px) scale(0.9)' 
-                              : 'none',
-                            zIndex: translatePerstepGrads2 ? (gpuIndex === 0 ? 10 : 30) : 'auto',
-                            backgroundColor: (translatePerstepGrads2 && gpuIndex === 1 && showTemporaryGlow)
-                              ? 'rgba(255, 200, 200, 1)'
-                              : 'white'
+                            opacity:
+                              gpuIndex === 0 && hideGpu0Perstep2
+                                ? 0
+                                : showPerstepGrads
+                                ? 1
+                                : 0,
+                            transform:
+                              // normal "push down" for GPU0
+                              translatePerstepGrads2 && gpuIndex === 0
+                                ? 'translateY(320px) scale(0.9)'
+                                : // final short nudge for GPU1 if finalTranslatePerstep is on
+                                finalTranslatePerstep && gpuIndex === 1
+                                ? 'translateY(80px) scale(0.9)'
+                                : 'none',
+                            zIndex: translatePerstepGrads2
+                              ? gpuIndex === 0
+                                ? 10
+                                : 30
+                              : 'auto',
+                            backgroundColor:
+                              translatePerstepGrads2 &&
+                              gpuIndex === 1 &&
+                              showTemporaryGlow
+                                ? 'rgba(255, 200, 200, 1)'
+                                : 'white'
                           }}
                         >
                           <span className="text-xs absolute top-1/2 left-1/2 
@@ -551,7 +583,7 @@ const ModelSplitAnimation = () => {
                       Unit{unitIndex}
                     </div>
 
-                    {/* Activations box*/}
+                    {/* Activations box */}
                     <div
                       className="absolute border-2 border-solid border-black rounded-xl bg-white
                         transition-all duration-500"
@@ -578,10 +610,10 @@ const ModelSplitAnimation = () => {
                         transition-all duration-500`}
                       style={{
                         height: showInternalStructure ? '25%' : '100%',
-                        opacity: showInternalStructure ? 1 : 1,
+                        opacity: showInternalStructure ? 1 : 1
                       }}
                     >
-                      {/* FIRST chevron set (Unit0) => Right-facing, normal fade/pulse order */}
+                      {/* FIRST chevron set (Unit0) => Right-facing */}
                       {unitIndex === 0 && (
                         <div
                           className="absolute top-1/2 right-44 transform -translate-y-1/2"
@@ -596,7 +628,7 @@ const ModelSplitAnimation = () => {
                         </div>
                       )}
 
-                      {/* SECOND chevron set (Unit2) => Left-facing, reversed fade/pulse */}
+                      {/* SECOND chevron set (Unit2) => Left-facing */}
                       {unitIndex === 2 && (
                         <div
                           className="absolute top-1/2 left-44 transform -translate-y-1/2"
@@ -613,12 +645,7 @@ const ModelSplitAnimation = () => {
                       )}
                     </div>
 
-                    {/* 
-                      The "internal structure" box for Params, Grads, Opt states.
-                      CHANGED HERE: we remove the `transform` from this container itself
-                      and rely on simpler positioning (top + negative margin) so that
-                      it remains in the same stacking context as the "per step grads."
-                    */}
+                    {/* The "internal structure" box for Params, Grads, Opt states */}
                     <div
                       className={`absolute w-16 transition-all duration-500 ease-in-out flex flex-col
                         ${
@@ -629,10 +656,8 @@ const ModelSplitAnimation = () => {
                             : 'opacity-0'
                         }`}
                       style={{
-                        // Instead of top-1/2 + transform(-translate-y-1/2):
-                        // we do top: "50%" and marginTop: half the box height negative
                         top: '50%',
-                        marginTop: '-80px', // half of 160px
+                        marginTop: '-80px',
                         left: gpuIndex === 0 ? '0px' : 'auto',
                         right: gpuIndex === 1 ? '0px' : 'auto',
                         height: '160px',
@@ -652,8 +677,6 @@ const ModelSplitAnimation = () => {
                                 : '100%',
                             left: gpuIndex === 1 ? 'auto' : '0',
                             right: gpuIndex === 1 ? '0' : 'auto',
-                            // Moved "transform" for show/hide from the containing div;
-                            // The transitions inside remain intact.
                             transform: `translateY(${showInternalStructure ? '0' : '50%'})`,
                             opacity: showInternalStructure ? '1' : '0'
                           }}
@@ -675,10 +698,20 @@ const ModelSplitAnimation = () => {
                             transform: `translate(0, ${
                               showInternalStructure ? '-100%' : '-50%'
                             })`,
-                            zIndex: finalTranslatePerstep1 && gpuIndex === 0 ? 40 : 'auto',
-                            backgroundColor: (finalTranslatePerstep1 && gpuIndex === 0 && unitIndex === 2 && showTemporaryGlowUnit2Grads)
-                              ? 'rgba(255, 200, 200, 1)'
-                              : 'white'
+                            // If finalTranslatePerstep is true for GPU0 or GPU1, we raise zIndex for that grads box
+                            zIndex: finalTranslatePerstep ? 40 : 'auto',
+                            backgroundColor:
+                              finalTranslatePerstep &&
+                              unitIndex === 2 &&
+                              gpuIndex === 0 &&
+                              showTemporaryGlowUnit2Grads
+                                ? 'rgba(255, 200, 200, 1)'
+                                : finalTranslatePerstep &&
+                                  unitIndex === 2 &&
+                                  gpuIndex === 1 &&
+                                  showTemporaryGlowUnit2GradsGpu1
+                                ? 'rgba(255, 200, 200, 1)'
+                                : 'white'
                           }}
                         >
                           <span className="text-xs absolute top-1/2 left-1/2
@@ -708,7 +741,6 @@ const ModelSplitAnimation = () => {
                         </div>
                       </div>
                     </div>
-                    {/* END CHANGE */}
                   </div>
                 ))}
               </div>
@@ -736,7 +768,11 @@ const ModelSplitAnimation = () => {
           setTranslatePerstepGrads1(false);
           setHideGpu1Perstep1(false);
           setHideGpu0Perstep2(false);
-          setFinalTranslatePerstep1(false);
+          /**
+           * CHANGED HERE: Instead of resetting finalTranslatePerstep1 and finalTranslatePerstep2,
+           * we reset our single finalTranslatePerstep.
+           */
+          setFinalTranslatePerstep(false);
           setExpandUnit2ParamsFinal(false);
 
           // First chevron set
@@ -758,6 +794,7 @@ const ModelSplitAnimation = () => {
           setShowTemporaryGlow(false);
           setShowTemporaryGlow1(false);
           setShowTemporaryGlowUnit2Grads(false);
+          setShowTemporaryGlowUnit2GradsGpu1(false);
         }}
         className="absolute bottom-4 left-1/2 transform -translate-x-1/2 
           px-4 py-2 bg-blue-500 text-white rounded-xl hover:bg-blue-600
