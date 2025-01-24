@@ -124,7 +124,6 @@ const ModelSplitAnimation = () => {
   // Second set of chevrons (anchored to Unit2)
   const [showChevrons2, setShowChevrons2] = useState(false);
   const [showPerstepGrads, setShowPerstepGrads] = useState(false);
-  const [splitPerstepGrads, setSplitPerstepGrads] = useState(false);
   const [shrinkPerstepGrads, setShrinkPerstepGrads] = useState(false);
   const [translatePerstepGrads2, setTranslatePerstepGrads2] = useState(false);
   const [translatePerstepGrads1, setTranslatePerstepGrads1] = useState(false);
@@ -318,29 +317,19 @@ const ModelSplitAnimation = () => {
                                     const perstepGradsTimer = setTimeout(() => {
                                       setShowPerstepGrads(true);
 
-                                      // After showing perstep grads, split them horizontally
-                                      const splitTimer = setTimeout(() => {
-                                        setSplitPerstepGrads(true);
+                                      // After showing perstep grads, shrink their widths
+                                      const shrinkTimer = setTimeout(() => {
+                                        setShrinkPerstepGrads(true);
 
-                                        // Then shrink their widths
-                                        const shrinkTimer = setTimeout(() => {
-                                          setShrinkPerstepGrads(true);
-
-                                          // After shrinking, translate Per step grads 2
-                                          const translateTimer = setTimeout(() => {
-                                            setTranslatePerstepGrads2(true);
-                                            setTranslatePerstepGrads1(true);
-                                          }, 1000);
-
-                                          return () => {
-                                            clearTimeout(shrinkTimer);
-                                            clearTimeout(translateTimer);
-                                          };
+                                        // After shrinking, translate Per step grads 2
+                                        const translateTimer = setTimeout(() => {
+                                          setTranslatePerstepGrads2(true);
+                                          setTranslatePerstepGrads1(true);
                                         }, 1000);
 
                                         return () => {
-                                          clearTimeout(perstepGradsTimer);
-                                          clearTimeout(splitTimer);
+                                          clearTimeout(shrinkTimer);
+                                          clearTimeout(translateTimer);
                                         };
                                       }, 1000);
 
@@ -778,7 +767,6 @@ const ModelSplitAnimation = () => {
           setShowInternalStructure(false);
           setCenterGPUs(false);
           setShowPerstepGrads(false);
-          setSplitPerstepGrads(false);
           setShrinkPerstepGrads(false);
           setTranslatePerstepGrads2(false);
           setTranslatePerstepGrads1(false);
