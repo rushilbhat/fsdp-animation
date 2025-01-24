@@ -116,6 +116,7 @@ const ModelSplitAnimation = () => {
   const [showTemporaryGlowUnit2Grads, setShowTemporaryGlowUnit2Grads] = useState(false);
   const [showTemporaryGlowUnit2GradsGpu1, setShowTemporaryGlowUnit2GradsGpu1] = useState(false);
   const [hideUnit2Activations, setHideUnit2Activations] = useState(false);
+  const [shrinkExpandedParams, setShrinkExpandedParams] = useState(false);
 
   // First set of chevrons (anchored to Unit0)
   const [showChevrons, setShowChevrons] = useState(false);
@@ -227,7 +228,14 @@ const ModelSplitAnimation = () => {
     if (finalTranslatePerstep) {
       const hideActivationsTimer = setTimeout(() => {
         setHideUnit2Activations(true);
-      }, 1500); // Delay after the final translate and glow effects
+        
+        // After hiding activations, shrink the expanded params box
+        const shrinkParamsTimer = setTimeout(() => {
+          setShrinkExpandedParams(true);
+        }, 500);
+        
+        return () => clearTimeout(shrinkParamsTimer);
+      }, 1500);
 
       return () => clearTimeout(hideActivationsTimer);
     }
@@ -676,8 +684,9 @@ const ModelSplitAnimation = () => {
                           style={{
                             height: 'calc(25%)',
                             width:
-                              (expandParamsBox[unitIndex] && !shrinkParamsBox[unitIndex]) ||
-                              (unitIndex === 2 && expandUnit2ParamsFinal)
+                              ((expandParamsBox[unitIndex] && !shrinkParamsBox[unitIndex]) ||
+                              (unitIndex === 2 && expandUnit2ParamsFinal)) &&
+                              !shrinkExpandedParams
                                 ? '128px'
                                 : '100%',
                             left: gpuIndex === 1 ? 'auto' : '0',
@@ -772,12 +781,9 @@ const ModelSplitAnimation = () => {
           setTranslatePerstepGrads1(false);
           setHideGpu1Perstep1(false);
           setHideGpu0Perstep2(false);
-          /**
-           * CHANGED HERE: Instead of resetting finalTranslatePerstep1 and finalTranslatePerstep2,
-           * we reset our single finalTranslatePerstep.
-           */
           setFinalTranslatePerstep(false);
           setExpandUnit2ParamsFinal(false);
+          setShrinkExpandedParams(false);
 
           // First chevron set
           setShowChevrons(false);
