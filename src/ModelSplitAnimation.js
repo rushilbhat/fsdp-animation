@@ -915,15 +915,13 @@ const ModelSplitAnimation = () => {
                           >
                             {shrinkPerstepGrads ? (
                               <>
-                                Per step
+                                Micro-grads
                                 <br />
-                                grads 1
+                                (shard)
                               </>
                             ) : (
                               <>
-                                Per step
-                                <br />
-                                grads
+                                Micro-grads
                               </>
                             )}
                           </span>
@@ -968,15 +966,13 @@ const ModelSplitAnimation = () => {
                           >
                             {shrinkPerstepGrads ? (
                               <>
-                                Per step
+                                Micro-grads
                                 <br />
-                                grads 2
+                                (shard)
                               </>
                             ) : (
                               <>
-                                Per step
-                                <br />
-                                grads
+                                Micro-grads
                               </>
                             )}
                           </span>
@@ -1028,15 +1024,13 @@ const ModelSplitAnimation = () => {
                           >
                             {shrinkPerstepGradsU1 ? (
                               <>
-                                Per step
+                                Micro-grads
                                 <br />
-                                grads 1
+                                (shard)
                               </>
                             ) : (
                               <>
-                                Per step
-                                <br />
-                                grads
+                                Micro-grads
                               </>
                             )}
                           </span>
@@ -1081,15 +1075,13 @@ const ModelSplitAnimation = () => {
                           >
                             {shrinkPerstepGradsU1 ? (
                               <>
-                                Per step
+                                Micro-grads
                                 <br />
-                                grads 2
+                                (shard)
                               </>
                             ) : (
                               <>
-                                Per step
-                                <br />
-                                grads
+                                Micro-grads
                               </>
                             )}
                           </span>
@@ -1141,15 +1133,13 @@ const ModelSplitAnimation = () => {
                           >
                             {shrinkPerstepGradsU0 ? (
                               <>
-                                Per step
+                                Micro-grads
                                 <br />
-                                grads 1
+                                (shard)
                               </>
                             ) : (
                               <>
-                                Per step
-                                <br />
-                                grads
+                                Micro-grads
                               </>
                             )}
                           </span>
@@ -1194,15 +1184,13 @@ const ModelSplitAnimation = () => {
                           >
                             {shrinkPerstepGradsU0 ? (
                               <>
-                                Per step
+                                Micro-grads
                                 <br />
-                                grads 2
+                                (shard)
                               </>
                             ) : (
                               <>
-                                Per step
-                                <br />
-                                grads
+                                Micro-grads
                               </>
                             )}
                           </span>
