@@ -747,7 +747,7 @@ const ModelSplitAnimation = () => {
                             return () => {
                               [...prevTimers, expandParamsTimer, showActivationsBoxTimer].forEach(clearTimeout);
                             };
-                          }, 500);
+                          }, 1000);
 
                           return () => {
                             [...prevTimers, expandParamsTimer].forEach(clearTimeout);
@@ -1300,7 +1300,7 @@ const ModelSplitAnimation = () => {
                         {/* Params section */}
                         <div
                           className="absolute border-2 border-solid border-black rounded-xl bg-white
-                            transition-all duration-500"
+                            transition-all duration-1000"
                           style={{
                             height: 'calc(25%)',
                             width:
