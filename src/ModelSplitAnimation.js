@@ -537,6 +537,87 @@ const ModelSplitAnimation = () => {
     }
   }, [shrinkExpandedParamsU0]);
 
+  // Watch for when second set of chevrons finishes fading out to trigger reset
+  useEffect(() => {
+    if (chevrons2FadeOutIndex === 2) {
+      const resetTimer = setTimeout(() => {
+        // Reset all states to their initial values
+        setIsSplit(false);
+        setIsShifted(false);
+        setShowGPUs(false);
+        setShowHalvesUnit0(false);
+        setShowHalvesUnit1(false);
+        setShowHalvesUnit2(false);
+        setCenterGPUs(false);
+        setShowInternalStructure(false);
+        
+        // Reset Unit2 states
+        setExpandUnit2ParamsFinal(false);
+        setShowPerstepGrads(false);
+        setShrinkPerstepGrads(false);
+        setTranslatePerstepGrads1(false);
+        setTranslatePerstepGrads2(false);
+        setHideGpu1Perstep1(false);
+        setHideGpu0Perstep2(false);
+        setFinalTranslatePerstep(false);
+        setShowTemporaryGlow(false);
+        setShowTemporaryGlow1(false);
+        setShowTemporaryGlowUnit2Grads(false);
+        setShowTemporaryGlowUnit2GradsGpu1(false);
+        setHideUnit2Activations(false);
+        setShrinkExpandedParams(false);
+        
+        // Reset Unit1 states
+        setExpandUnit1ParamsFinal(false);
+        setShowPerstepGradsU1(false);
+        setShrinkPerstepGradsU1(false);
+        setTranslatePerstepGrads1U1(false);
+        setTranslatePerstepGrads2U1(false);
+        setHideGpu1Perstep1U1(false);
+        setHideGpu0Perstep2U1(false);
+        setFinalTranslatePerstepU1(false);
+        setShowTemporaryGlowU1Gpu0(false);
+        setShowTemporaryGlowU1Gpu1(false);
+        setShowTemporaryGlowUnit1GradsGpu0(false);
+        setShowTemporaryGlowUnit1GradsGpu1(false);
+        setHideUnit1Activations(false);
+        setShrinkExpandedParamsU1(false);
+        
+        // Reset Unit0 states
+        setExpandUnit0ParamsFinal(false);
+        setShowPerstepGradsU0(false);
+        setShrinkPerstepGradsU0(false);
+        setTranslatePerstepGrads1U0(false);
+        setTranslatePerstepGrads2U0(false);
+        setHideGpu1Perstep1U0(false);
+        setHideGpu0Perstep2U0(false);
+        setFinalTranslatePerstepU0(false);
+        setShowTemporaryGlowU0Gpu0(false);
+        setShowTemporaryGlowU0Gpu1(false);
+        setShowTemporaryGlowUnit0GradsGpu0(false);
+        setShowTemporaryGlowUnit0GradsGpu1(false);
+        setHideUnit0Activations(false);
+        setShrinkExpandedParamsU0(false);
+        
+        // Reset basic expansions
+        setExpandParamsBox([false, false, false]);
+        setShowActivationsBox([false, false, false]);
+        setShrinkParamsBox([false, false, false]);
+        
+        // Reset chevrons
+        setShowChevrons(false);
+        setChevronFadeOutIndex(-1);
+        setShowChevrons2(false);
+        setChevrons2FadeOutIndex(-1);
+
+        // Trigger the animation to start again
+        setShouldReset((prev) => !prev);
+      }, 1500);
+
+      return () => clearTimeout(resetTimer);
+    }
+  }, [chevrons2FadeOutIndex]);
+
   // ===============================
   // The main (global) sequence on mount
   // ===============================
@@ -1338,8 +1419,8 @@ const ModelSplitAnimation = () => {
           setShowHalvesUnit0(false);
           setShowHalvesUnit1(false);
           setShowHalvesUnit2(false);
-          setShowInternalStructure(false);
           setCenterGPUs(false);
+          setShowInternalStructure(false);
 
           // Unit2
           setShowPerstepGrads(false);
