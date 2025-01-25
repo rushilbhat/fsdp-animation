@@ -47,6 +47,7 @@ const FatChevron = ({ pulseDelay, reverseArrowDir = false, color = "text-blue-30
 const AnimatedChevrons = ({
   isVisible,
   fadeOutIndex = -1,
+  fadeOutIndexReverse = -1,
   reverseFadeIn = false,
   reverseArrowDir = false,
   reversePulseOrder = false,
@@ -86,7 +87,9 @@ const AnimatedChevrons = ({
             key={index}
             className="transition-opacity duration-1000 ease-in-out"
             style={{
-              opacity: visibleChevrons[index] && fadeOutIndex < index ? 1 : 0,
+              opacity: visibleChevrons[index] && 
+                      fadeOutIndex < index && 
+                      (fadeOutIndexReverse === -1 || (2 - fadeOutIndexReverse) > index) ? 1 : 0,
             }}
           >
             <FatChevron
@@ -125,6 +128,7 @@ const ModelSplitAnimation = () => {
   // (Expand final params on Unit2, show per-step, shrink, etc.)
   // ===============================
   const [showChevrons2, setShowChevrons2] = useState(false);
+  const [chevrons2FadeOutIndex, setChevrons2FadeOutIndex] = useState(-1);
   const [expandUnit2ParamsFinal, setExpandUnit2ParamsFinal] = useState(false);
   const [showPerstepGrads, setShowPerstepGrads] = useState(false);
   const [shrinkPerstepGrads, setShrinkPerstepGrads] = useState(false);
@@ -138,7 +142,7 @@ const ModelSplitAnimation = () => {
   const [showTemporaryGlow, setShowTemporaryGlow] = useState(false);
   const [showTemporaryGlow1, setShowTemporaryGlow1] = useState(false);
 
-  // Glow effect for Unit2’s grads box on both GPUs after final
+  // Glow effect for Unit2's grads box on both GPUs after final
   const [showTemporaryGlowUnit2Grads, setShowTemporaryGlowUnit2Grads] = useState(false);
   const [showTemporaryGlowUnit2GradsGpu1, setShowTemporaryGlowUnit2GradsGpu1] = useState(false);
 
@@ -519,6 +523,19 @@ const ModelSplitAnimation = () => {
     }
   }, [finalTranslatePerstepU0]);
 
+  // Effect to handle the fade out of second chevron set after Unit0 is done
+  useEffect(() => {
+    if (shrinkExpandedParamsU0) {
+      // Start fading out the second set of chevrons from right to left
+      const fadeOutSequence = [0, 1, 2].map((i) => {
+        return setTimeout(() => {
+          setChevrons2FadeOutIndex(i);
+        }, 1000 + i * 700);
+      });
+
+      return () => fadeOutSequence.forEach(clearTimeout);
+    }
+  }, [shrinkExpandedParamsU0]);
 
   // ===============================
   // The main (global) sequence on mount
@@ -815,9 +832,19 @@ const ModelSplitAnimation = () => {
                           <span className="text-xs absolute top-1/2 left-1/2 
                             -translate-x-1/2 -translate-y-1/2 whitespace-nowrap text-center"
                           >
-                            Per step
-                            <br />
-                            grads 1
+                            {shrinkPerstepGrads ? (
+                              <>
+                                Per step
+                                <br />
+                                grads 1
+                              </>
+                            ) : (
+                              <>
+                                Per step
+                                <br />
+                                grads
+                              </>
+                            )}
                           </span>
                         </div>
 
@@ -858,9 +885,19 @@ const ModelSplitAnimation = () => {
                           <span className="text-xs absolute top-1/2 left-1/2 
                             -translate-x-1/2 -translate-y-1/2 whitespace-nowrap text-center"
                           >
-                            Per step
-                            <br />
-                            grads 2
+                            {shrinkPerstepGrads ? (
+                              <>
+                                Per step
+                                <br />
+                                grads 2
+                              </>
+                            ) : (
+                              <>
+                                Per step
+                                <br />
+                                grads
+                              </>
+                            )}
                           </span>
                         </div>
                       </>
@@ -908,9 +945,19 @@ const ModelSplitAnimation = () => {
                           <span className="text-xs absolute top-1/2 left-1/2 
                             -translate-x-1/2 -translate-y-1/2 whitespace-nowrap text-center"
                           >
-                            Per step
-                            <br />
-                            grads 1
+                            {shrinkPerstepGradsU1 ? (
+                              <>
+                                Per step
+                                <br />
+                                grads 1
+                              </>
+                            ) : (
+                              <>
+                                Per step
+                                <br />
+                                grads
+                              </>
+                            )}
                           </span>
                         </div>
 
@@ -951,9 +998,19 @@ const ModelSplitAnimation = () => {
                           <span className="text-xs absolute top-1/2 left-1/2 
                             -translate-x-1/2 -translate-y-1/2 whitespace-nowrap text-center"
                           >
-                            Per step
-                            <br />
-                            grads 2
+                            {shrinkPerstepGradsU1 ? (
+                              <>
+                                Per step
+                                <br />
+                                grads 2
+                              </>
+                            ) : (
+                              <>
+                                Per step
+                                <br />
+                                grads
+                              </>
+                            )}
                           </span>
                         </div>
                       </>
@@ -1001,9 +1058,19 @@ const ModelSplitAnimation = () => {
                           <span className="text-xs absolute top-1/2 left-1/2 
                             -translate-x-1/2 -translate-y-1/2 whitespace-nowrap text-center"
                           >
-                            Per step
-                            <br />
-                            grads 1
+                            {shrinkPerstepGradsU0 ? (
+                              <>
+                                Per step
+                                <br />
+                                grads 1
+                              </>
+                            ) : (
+                              <>
+                                Per step
+                                <br />
+                                grads
+                              </>
+                            )}
                           </span>
                         </div>
 
@@ -1044,9 +1111,19 @@ const ModelSplitAnimation = () => {
                           <span className="text-xs absolute top-1/2 left-1/2 
                             -translate-x-1/2 -translate-y-1/2 whitespace-nowrap text-center"
                           >
-                            Per step
-                            <br />
-                            grads 2
+                            {shrinkPerstepGradsU0 ? (
+                              <>
+                                Per step
+                                <br />
+                                grads 2
+                              </>
+                            ) : (
+                              <>
+                                Per step
+                                <br />
+                                grads
+                              </>
+                            )}
                           </span>
                         </div>
                       </>
@@ -1122,6 +1199,7 @@ const ModelSplitAnimation = () => {
                           <AnimatedChevrons
                             isVisible={showChevrons2}
                             fadeOutIndex={-1}
+                            fadeOutIndexReverse={chevrons2FadeOutIndex}
                             reverseFadeIn={true}
                             reverseArrowDir={true}
                             reversePulseOrder={true}
