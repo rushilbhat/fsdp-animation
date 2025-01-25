@@ -26,7 +26,7 @@ const ShardingAnimation = () => {
             </div>
       
             {/* Dashed-border boxes 13–25 */}
-            <div className="flex gap-1 p-1.5 mt-8">
+            <div className="flex gap-1 p-1.5 mt-7">
               {boxes.slice(13).map((num) => (
                 <div
                   key={num}
@@ -42,7 +42,7 @@ const ShardingAnimation = () => {
           {/* Second Row */}
           <div className="-space-x-0.5 flex">
             {/* Dashed boxes -13 to -1 */}
-            <div className="flex gap-1 p-1.5 mt-8">
+            <div className="flex gap-1 p-1.5 mt-7">
               {negativeBoxes.map((num) => (
                 <div
                   key={`second-${num}`}
