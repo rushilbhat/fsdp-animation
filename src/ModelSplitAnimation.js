@@ -1232,7 +1232,7 @@ const ModelSplitAnimation = () => {
                       <span className="text-xs absolute top-1/2 left-1/2 
                         -translate-x-1/2 -translate-y-1/2 whitespace-nowrap"
                       >
-                        Act.
+                        Activations
                       </span>
                     </div>
           
@@ -1365,7 +1365,9 @@ const ModelSplitAnimation = () => {
                           <span className="text-xs absolute top-1/2 left-1/2
                             -translate-x-1/2 -translate-y-1/2"
                           >
-                            {showInternalStructure ? 'Grads' : `Unit${unitIndex}`}
+                            {showInternalStructure ? 'Grads' : (
+                              <span className="text-sm">Unit{unitIndex}</span>
+                            )}
                           </span>
                         </div>
 
@@ -1382,7 +1384,7 @@ const ModelSplitAnimation = () => {
                           <span className="text-xs absolute top-1/2 left-1/2
                             -translate-x-1/2 -translate-y-1/2 text-center"
                           >
-                            Opt.
+                            Optimizer
                             <br />
                             states
                           </span>
