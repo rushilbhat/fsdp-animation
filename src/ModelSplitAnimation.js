@@ -814,7 +814,7 @@ const ModelSplitAnimation = () => {
                 transition-all duration-500 ease-in-out"
               style={{
                 transform: isSplit
-                  ? `translateX(${(i - 1) * 140}px)`
+                  ? `translateX(${(i - 1) * 176}px)`
                   : 'translateX(0)',
                 opacity: isSplit 
                   ? (i === 0 && showHalvesUnit0
@@ -827,7 +827,7 @@ const ModelSplitAnimation = () => {
                   : i === 1
                   ? 1
                   : 0,
-                width: isSplit ? '128px' : '384px',
+                width: isSplit ? '160px' : '480px',
                 height: '160px',
                 zIndex: i === 1 ? 2 : 1
               }}
@@ -868,9 +868,9 @@ const ModelSplitAnimation = () => {
               <span className="absolute bottom-2 right-2 text-xl">GPU{gpuIndex}</span>
 
               {/* Inside each GPU, place 3 Unit placeholders */}
-              <div className="w-full h-full p-4 flex justify-center items-center gap-8">
+              <div className="w-full h-full p-4 flex justify-center items-center gap-4">
                 {[0, 1, 2].map((unitIndex) => (
-                  <div key={unitIndex} className="w-32 h-40 relative">
+                  <div key={unitIndex} className="w-40 h-40 relative">
                     {/* ============================ */}
                     {/* Per-step grads for Unit2    */}
                     {/* ============================ */}
@@ -1226,7 +1226,7 @@ const ModelSplitAnimation = () => {
                       style={{
                         top: '25%',
                         height: 'calc(75%)',
-                        width: '64px',
+                        width: '76px',
                         // Hide activation for Unit2, Unit1, or Unit0 if necessary
                         opacity:
                           (unitIndex === 2 && hideUnit2Activations) ||
@@ -1292,7 +1292,7 @@ const ModelSplitAnimation = () => {
 
                     {/* The "internal structure" box for Params, Grads, Opt states */}
                     <div
-                      className={`absolute w-16 transition-all duration-500 ease-in-out flex flex-col
+                      className={`absolute w-[76px] transition-all duration-500 ease-in-out flex flex-col
                         ${
                           (unitIndex === 0 && showHalvesUnit0) ||
                           (unitIndex === 1 && showHalvesUnit1) ||
@@ -1322,7 +1322,7 @@ const ModelSplitAnimation = () => {
                                 (unitIndex === 1 && expandUnit1ParamsFinal && !shrinkExpandedParamsU1) ||
                                 (unitIndex === 0 && expandUnit0ParamsFinal && !shrinkExpandedParamsU0)
                               )
-                                ? '128px'
+                                ? '151px'
                                 : '100%',
                             left: gpuIndex === 1 ? 'auto' : '0',
                             right: gpuIndex === 1 ? '0' : 'auto',
