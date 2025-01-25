@@ -102,7 +102,9 @@ const AnimatedChevrons = ({
 };
 
 const ModelSplitAnimation = () => {
-  // Top-level animation states
+  // =========================
+  // Basic top-level animations
+  // =========================
   const [isSplit, setIsSplit] = useState(false);
   const [isShifted, setIsShifted] = useState(false);
   const [showGPUs, setShowGPUs] = useState(false);
@@ -111,35 +113,88 @@ const ModelSplitAnimation = () => {
   const [showHalvesUnit2, setShowHalvesUnit2] = useState(false);
   const [centerGPUs, setCenterGPUs] = useState(false);
   const [showInternalStructure, setShowInternalStructure] = useState(false);
-  const [showTemporaryGlow, setShowTemporaryGlow] = useState(false);
-  const [showTemporaryGlow1, setShowTemporaryGlow1] = useState(false);
-  const [showTemporaryGlowUnit2Grads, setShowTemporaryGlowUnit2Grads] = useState(false);
-  const [showTemporaryGlowUnit2GradsGpu1, setShowTemporaryGlowUnit2GradsGpu1] = useState(false);
-  const [hideUnit2Activations, setHideUnit2Activations] = useState(false);
-  const [shrinkExpandedParams, setShrinkExpandedParams] = useState(false);
 
-  // First set of chevrons (anchored to Unit0)
+  // ===============================
+  // FIRST chevron set (anchored to Unit0)
+  // ===============================
   const [showChevrons, setShowChevrons] = useState(false);
   const [chevronFadeOutIndex, setChevronFadeOutIndex] = useState(-1);
 
-  // Second set of chevrons (anchored to Unit2)
+  // ===============================
+  // SECOND chevron set (anchored to Unit2) - original
+  // (Expand final params on Unit2, show per-step, shrink, etc.)
+  // ===============================
   const [showChevrons2, setShowChevrons2] = useState(false);
+  const [expandUnit2ParamsFinal, setExpandUnit2ParamsFinal] = useState(false);
   const [showPerstepGrads, setShowPerstepGrads] = useState(false);
   const [shrinkPerstepGrads, setShrinkPerstepGrads] = useState(false);
-  const [translatePerstepGrads2, setTranslatePerstepGrads2] = useState(false);
   const [translatePerstepGrads1, setTranslatePerstepGrads1] = useState(false);
+  const [translatePerstepGrads2, setTranslatePerstepGrads2] = useState(false);
   const [hideGpu1Perstep1, setHideGpu1Perstep1] = useState(false);
   const [hideGpu0Perstep2, setHideGpu0Perstep2] = useState(false);
-
-  /**
-   *  ---- CHANGED HERE: Instead of having finalTranslatePerstep1 and finalTranslatePerstep2,
-   *       we have ONE state that handles the "final" translate for both GPU0 and GPU1.
-   */
   const [finalTranslatePerstep, setFinalTranslatePerstep] = useState(false);
 
-  const [expandUnit2ParamsFinal, setExpandUnit2ParamsFinal] = useState(false);
+  // Glow states for GPU0 / GPU1 while per-step grads move
+  const [showTemporaryGlow, setShowTemporaryGlow] = useState(false);
+  const [showTemporaryGlow1, setShowTemporaryGlow1] = useState(false);
 
-  // Arrays controlling param expansions, Activations boxes, etc.
+  // Glow effect for Unit2’s grads box on both GPUs after final
+  const [showTemporaryGlowUnit2Grads, setShowTemporaryGlowUnit2Grads] = useState(false);
+  const [showTemporaryGlowUnit2GradsGpu1, setShowTemporaryGlowUnit2GradsGpu1] = useState(false);
+
+  // Hide Unit2 Activations box after final
+  const [hideUnit2Activations, setHideUnit2Activations] = useState(false);
+
+  // Shrink the final expanded Params box on Unit2
+  const [shrinkExpandedParams, setShrinkExpandedParams] = useState(false);
+
+  // ===============================
+  // SEQUENCE for Unit1 (just like Unit2)
+  // ===============================
+  const [expandUnit1ParamsFinal, setExpandUnit1ParamsFinal] = useState(false);
+  const [showPerstepGradsU1, setShowPerstepGradsU1] = useState(false);
+  const [shrinkPerstepGradsU1, setShrinkPerstepGradsU1] = useState(false);
+  const [translatePerstepGrads1U1, setTranslatePerstepGrads1U1] = useState(false);
+  const [translatePerstepGrads2U1, setTranslatePerstepGrads2U1] = useState(false);
+  const [hideGpu1Perstep1U1, setHideGpu1Perstep1U1] = useState(false);
+  const [hideGpu0Perstep2U1, setHideGpu0Perstep2U1] = useState(false);
+  const [finalTranslatePerstepU1, setFinalTranslatePerstepU1] = useState(false);
+
+  // Glow states (Unit1)
+  const [showTemporaryGlowU1Gpu0, setShowTemporaryGlowU1Gpu0] = useState(false);
+  const [showTemporaryGlowU1Gpu1, setShowTemporaryGlowU1Gpu1] = useState(false);
+  const [showTemporaryGlowUnit1GradsGpu0, setShowTemporaryGlowUnit1GradsGpu0] = useState(false);
+  const [showTemporaryGlowUnit1GradsGpu1, setShowTemporaryGlowUnit1GradsGpu1] = useState(false);
+
+  // Hide Unit1 Activations & shrink final box
+  const [hideUnit1Activations, setHideUnit1Activations] = useState(false);
+  const [shrinkExpandedParamsU1, setShrinkExpandedParamsU1] = useState(false);
+
+  // ===============================
+  // SEQUENCE for Unit0 (NEW)
+  // ===============================
+  const [expandUnit0ParamsFinal, setExpandUnit0ParamsFinal] = useState(false);
+  const [showPerstepGradsU0, setShowPerstepGradsU0] = useState(false);
+  const [shrinkPerstepGradsU0, setShrinkPerstepGradsU0] = useState(false);
+  const [translatePerstepGrads1U0, setTranslatePerstepGrads1U0] = useState(false);
+  const [translatePerstepGrads2U0, setTranslatePerstepGrads2U0] = useState(false);
+  const [hideGpu1Perstep1U0, setHideGpu1Perstep1U0] = useState(false);
+  const [hideGpu0Perstep2U0, setHideGpu0Perstep2U0] = useState(false);
+  const [finalTranslatePerstepU0, setFinalTranslatePerstepU0] = useState(false);
+
+  // Glow states (Unit0)
+  const [showTemporaryGlowU0Gpu0, setShowTemporaryGlowU0Gpu0] = useState(false);
+  const [showTemporaryGlowU0Gpu1, setShowTemporaryGlowU0Gpu1] = useState(false);
+  const [showTemporaryGlowUnit0GradsGpu0, setShowTemporaryGlowUnit0GradsGpu0] = useState(false);
+  const [showTemporaryGlowUnit0GradsGpu1, setShowTemporaryGlowUnit0GradsGpu1] = useState(false);
+
+  // Hide Unit0 Activations & shrink final box
+  const [hideUnit0Activations, setHideUnit0Activations] = useState(false);
+  const [shrinkExpandedParamsU0, setShrinkExpandedParamsU0] = useState(false);
+
+  // ===============================
+  // Basic expansions for each Unit
+  // ===============================
   const [expandParamsBox, setExpandParamsBox] = useState([false, false, false]);
   const [showActivationsBox, setShowActivationsBox] = useState([false, false, false]);
   const [shrinkParamsBox, setShrinkParamsBox] = useState([false, false, false]);
@@ -147,58 +202,51 @@ const ModelSplitAnimation = () => {
   // Trigger to restart the entire sequence
   const [shouldReset, setShouldReset] = useState(false);
 
-  // Watch for translatePerstepGrads1 changes to trigger the temporary glow (GPU1, per-step grads 1)
+  // =====================================
+  // Effect watchers for the Unit2 sequence
+  // =====================================
+
+  // 1) Translate per-step for GPU1 => glow => hide
   useEffect(() => {
     if (translatePerstepGrads1) {
       const showGlowTimer = setTimeout(() => {
         setShowTemporaryGlow1(true);
-        
         const hideGlowTimer = setTimeout(() => {
           setShowTemporaryGlow1(false);
           setHideGpu1Perstep1(true);
         }, 1000);
-        
         return () => clearTimeout(hideGlowTimer);
       }, 300);
-      
       return () => clearTimeout(showGlowTimer);
     }
   }, [translatePerstepGrads1]);
 
-  // Watch for translatePerstepGrads2 changes to trigger the temporary glow (GPU0, per-step grads 2)
+  // 2) Translate per-step for GPU0 => glow => hide => final
   useEffect(() => {
     if (translatePerstepGrads2) {
       const showGlowTimer = setTimeout(() => {
         setShowTemporaryGlow(true);
-        
         const hideGlowTimer = setTimeout(() => {
           setShowTemporaryGlow(false);
           setHideGpu0Perstep2(true);
 
           // Start the final transition after a delay
           const finalTransitionTimer = setTimeout(() => {
-            // Instead of finalTranslatePerstep1 and finalTranslatePerstep2, 
-            // we just flip one boolean:
             setFinalTranslatePerstep(true);
           }, 500);
 
           return () => clearTimeout(finalTransitionTimer);
         }, 1000);
-        
         return () => clearTimeout(hideGlowTimer);
       }, 300);
-      
       return () => clearTimeout(showGlowTimer);
     }
   }, [translatePerstepGrads2]);
 
-  /**
-   * CHANGED HERE: Single effect that watches `finalTranslatePerstep`.
-   * Triggers the "temporary glow" on Unit2 grads for both GPU0 and GPU1.
-   */
+  // 3) finalTranslatePerstep => glow on grads box => hide
   useEffect(() => {
     if (finalTranslatePerstep) {
-      // Delay before showing GPU0 glow
+      // GPU0 glow
       const showGlowTimerGpu0 = setTimeout(() => {
         setShowTemporaryGlowUnit2Grads(true);
         const hideGlowTimerGpu0 = setTimeout(() => {
@@ -207,7 +255,7 @@ const ModelSplitAnimation = () => {
         return () => clearTimeout(hideGlowTimerGpu0);
       }, 300);
 
-      // Delay before showing GPU1 glow
+      // GPU1 glow
       const showGlowTimerGpu1 = setTimeout(() => {
         setShowTemporaryGlowUnit2GradsGpu1(true);
         const hideGlowTimerGpu1 = setTimeout(() => {
@@ -223,17 +271,15 @@ const ModelSplitAnimation = () => {
     }
   }, [finalTranslatePerstep]);
 
-  // Effect to hide Unit 2 activations after final translate
+  // 4) Hide Unit2 activations and shrink final box
   useEffect(() => {
     if (finalTranslatePerstep) {
       const hideActivationsTimer = setTimeout(() => {
         setHideUnit2Activations(true);
-        
-        // After hiding activations, shrink the expanded params box
+        // Then shrink the expanded params
         const shrinkParamsTimer = setTimeout(() => {
           setShrinkExpandedParams(true);
         }, 500);
-        
         return () => clearTimeout(shrinkParamsTimer);
       }, 1500);
 
@@ -241,6 +287,242 @@ const ModelSplitAnimation = () => {
     }
   }, [finalTranslatePerstep]);
 
+
+  // =====================================
+  // Unit1 sequence watchers (same pattern)
+  // =====================================
+
+  // Start Unit1 sequence after shrinking final box on Unit2
+  useEffect(() => {
+    if (shrinkExpandedParams) {
+      const startUnit1Timer = setTimeout(() => {
+        setExpandUnit1ParamsFinal(true);
+
+        const showPerstepTimer = setTimeout(() => {
+          setShowPerstepGradsU1(true);
+
+          const shrinkPerstepTimer = setTimeout(() => {
+            setShrinkPerstepGradsU1(true);
+
+            // Then do translates
+            const translateTimer = setTimeout(() => {
+              setTranslatePerstepGrads1U1(true);
+              setTranslatePerstepGrads2U1(true);
+            }, 1000);
+
+            return () => clearTimeout(translateTimer);
+          }, 1000);
+
+          return () => clearTimeout(shrinkPerstepTimer);
+        }, 1000);
+
+        return () => clearTimeout(showPerstepTimer);
+      }, 1000);
+
+      return () => clearTimeout(startUnit1Timer);
+    }
+  }, [shrinkExpandedParams]);
+
+  // Translate per-step for GPU1 => glow => hide (Unit1)
+  useEffect(() => {
+    if (translatePerstepGrads1U1) {
+      const showGlowTimer = setTimeout(() => {
+        setShowTemporaryGlowU1Gpu1(true);
+        const hideGlowTimer = setTimeout(() => {
+          setShowTemporaryGlowU1Gpu1(false);
+          setHideGpu1Perstep1U1(true);
+        }, 1000);
+        return () => clearTimeout(hideGlowTimer);
+      }, 300);
+      return () => clearTimeout(showGlowTimer);
+    }
+  }, [translatePerstepGrads1U1]);
+
+  // Translate per-step for GPU0 => glow => hide => final (Unit1)
+  useEffect(() => {
+    if (translatePerstepGrads2U1) {
+      const showGlowTimer = setTimeout(() => {
+        setShowTemporaryGlowU1Gpu0(true);
+        const hideGlowTimer = setTimeout(() => {
+          setShowTemporaryGlowU1Gpu0(false);
+          setHideGpu0Perstep2U1(true);
+
+          // final
+          const finalTransitionTimer = setTimeout(() => {
+            setFinalTranslatePerstepU1(true);
+          }, 500);
+
+          return () => clearTimeout(finalTransitionTimer);
+        }, 1000);
+        return () => clearTimeout(hideGlowTimer);
+      }, 300);
+      return () => clearTimeout(showGlowTimer);
+    }
+  }, [translatePerstepGrads2U1]);
+
+  // finalTranslatePerstepU1 => glow on Unit1 grads box => ...
+  useEffect(() => {
+    if (finalTranslatePerstepU1) {
+      // GPU0
+      const showGlowTimerGpu0 = setTimeout(() => {
+        setShowTemporaryGlowUnit1GradsGpu0(true);
+        const hideGlowTimerGpu0 = setTimeout(() => {
+          setShowTemporaryGlowUnit1GradsGpu0(false);
+        }, 1000);
+        return () => clearTimeout(hideGlowTimerGpu0);
+      }, 300);
+
+      // GPU1
+      const showGlowTimerGpu1 = setTimeout(() => {
+        setShowTemporaryGlowUnit1GradsGpu1(true);
+        const hideGlowTimerGpu1 = setTimeout(() => {
+          setShowTemporaryGlowUnit1GradsGpu1(false);
+        }, 1000);
+        return () => clearTimeout(hideGlowTimerGpu1);
+      }, 300);
+
+      return () => {
+        clearTimeout(showGlowTimerGpu0);
+        clearTimeout(showGlowTimerGpu1);
+      };
+    }
+  }, [finalTranslatePerstepU1]);
+
+  // Hide Unit1 activations, shrink Unit1 final box
+  useEffect(() => {
+    if (finalTranslatePerstepU1) {
+      const hideActivationsTimer = setTimeout(() => {
+        setHideUnit1Activations(true);
+        const shrinkParamsTimer = setTimeout(() => {
+          setShrinkExpandedParamsU1(true);
+        }, 500);
+        return () => clearTimeout(shrinkParamsTimer);
+      }, 1500);
+
+      return () => clearTimeout(hideActivationsTimer);
+    }
+  }, [finalTranslatePerstepU1]);
+
+
+  // =====================================
+  // Unit0 sequence watchers (NEW)
+  // =====================================
+
+  // Start Unit0 sequence after shrinking final box on Unit1
+  useEffect(() => {
+    if (shrinkExpandedParamsU1) {
+      const startUnit0Timer = setTimeout(() => {
+        setExpandUnit0ParamsFinal(true);
+
+        const showPerstepTimer = setTimeout(() => {
+          setShowPerstepGradsU0(true);
+
+          const shrinkPerstepTimer = setTimeout(() => {
+            setShrinkPerstepGradsU0(true);
+
+            // Then do the translates
+            const translateTimer = setTimeout(() => {
+              setTranslatePerstepGrads1U0(true);
+              setTranslatePerstepGrads2U0(true);
+            }, 1000);
+
+            return () => clearTimeout(translateTimer);
+          }, 1000);
+
+          return () => clearTimeout(shrinkPerstepTimer);
+        }, 1000);
+
+        return () => clearTimeout(showPerstepTimer);
+      }, 1000);
+
+      return () => clearTimeout(startUnit0Timer);
+    }
+  }, [shrinkExpandedParamsU1]);
+
+  // Translate per-step for GPU1 => glow => hide (Unit0)
+  useEffect(() => {
+    if (translatePerstepGrads1U0) {
+      const showGlowTimer = setTimeout(() => {
+        setShowTemporaryGlowU0Gpu1(true);
+        const hideGlowTimer = setTimeout(() => {
+          setShowTemporaryGlowU0Gpu1(false);
+          setHideGpu1Perstep1U0(true);
+        }, 1000);
+        return () => clearTimeout(hideGlowTimer);
+      }, 300);
+      return () => clearTimeout(showGlowTimer);
+    }
+  }, [translatePerstepGrads1U0]);
+
+  // Translate per-step for GPU0 => glow => hide => final (Unit0)
+  useEffect(() => {
+    if (translatePerstepGrads2U0) {
+      const showGlowTimer = setTimeout(() => {
+        setShowTemporaryGlowU0Gpu0(true);
+        const hideGlowTimer = setTimeout(() => {
+          setShowTemporaryGlowU0Gpu0(false);
+          setHideGpu0Perstep2U0(true);
+
+          // final
+          const finalTransitionTimer = setTimeout(() => {
+            setFinalTranslatePerstepU0(true);
+          }, 500);
+
+          return () => clearTimeout(finalTransitionTimer);
+        }, 1000);
+        return () => clearTimeout(hideGlowTimer);
+      }, 300);
+      return () => clearTimeout(showGlowTimer);
+    }
+  }, [translatePerstepGrads2U0]);
+
+  // finalTranslatePerstepU0 => glow on Unit0 grads box => ...
+  useEffect(() => {
+    if (finalTranslatePerstepU0) {
+      // GPU0
+      const showGlowTimerGpu0 = setTimeout(() => {
+        setShowTemporaryGlowUnit0GradsGpu0(true);
+        const hideGlowTimerGpu0 = setTimeout(() => {
+          setShowTemporaryGlowUnit0GradsGpu0(false);
+        }, 1000);
+        return () => clearTimeout(hideGlowTimerGpu0);
+      }, 300);
+
+      // GPU1
+      const showGlowTimerGpu1 = setTimeout(() => {
+        setShowTemporaryGlowUnit0GradsGpu1(true);
+        const hideGlowTimerGpu1 = setTimeout(() => {
+          setShowTemporaryGlowUnit0GradsGpu1(false);
+        }, 1000);
+        return () => clearTimeout(hideGlowTimerGpu1);
+      }, 300);
+
+      return () => {
+        clearTimeout(showGlowTimerGpu0);
+        clearTimeout(showGlowTimerGpu1);
+      };
+    }
+  }, [finalTranslatePerstepU0]);
+
+  // Hide Unit0 activations, shrink Unit0 final box
+  useEffect(() => {
+    if (finalTranslatePerstepU0) {
+      const hideActivationsTimer = setTimeout(() => {
+        setHideUnit0Activations(true);
+        const shrinkParamsTimer = setTimeout(() => {
+          setShrinkExpandedParamsU0(true);
+        }, 500);
+        return () => clearTimeout(shrinkParamsTimer);
+      }, 1500);
+
+      return () => clearTimeout(hideActivationsTimer);
+    }
+  }, [finalTranslatePerstepU0]);
+
+
+  // ===============================
+  // The main (global) sequence on mount
+  // ===============================
   useEffect(() => {
     // Start the entire sequence after a short delay
     const splitTimer = setTimeout(() => {
@@ -313,11 +595,11 @@ const ModelSplitAnimation = () => {
                                   }, 1000 + i * 700);
                                 });
 
-                                // After they've fully faded, show the second set
+                                // After they've fully faded, show the second set (Unit2)
                                 const finalFadeOutTimer = setTimeout(() => {
                                   setShowChevrons2(true);
                                   
-                                  // First expand params box for Unit2
+                                  // Expand params box for Unit2
                                   const expandParamsFinalTimer = setTimeout(() => {
                                     setExpandUnit2ParamsFinal(true);
                                     
@@ -329,10 +611,10 @@ const ModelSplitAnimation = () => {
                                       const shrinkTimer = setTimeout(() => {
                                         setShrinkPerstepGrads(true);
 
-                                        // After shrinking, translate Per step grads 2
+                                        // Then translate Per-step grads
                                         const translateTimer = setTimeout(() => {
-                                          setTranslatePerstepGrads2(true);
                                           setTranslatePerstepGrads1(true);
+                                          setTranslatePerstepGrads2(true);
                                         }, 1000);
 
                                         return () => {
@@ -379,7 +661,7 @@ const ModelSplitAnimation = () => {
                         };
                       };
 
-                      // Kick off the expansions at Unit0
+                      // Kick off expansions at Unit0
                       createUnitSequence(0);
                     }, 1000);
 
@@ -411,6 +693,9 @@ const ModelSplitAnimation = () => {
     return () => clearTimeout(splitTimer);
   }, [shouldReset]);
 
+  // =========================
+  // Render
+  // =========================
   return (
     <div className="w-full h-screen relative">
       {/* Units Container */}
@@ -488,10 +773,12 @@ const ModelSplitAnimation = () => {
               <div className="w-full h-full p-4 flex justify-center items-center gap-8">
                 {[0, 1, 2].map((unitIndex) => (
                   <div key={unitIndex} className="w-32 h-40 relative">
-                    {/* Per-step grads box - only for Unit2 */}
+                    {/* ============================ */}
+                    {/* Per-step grads for Unit2    */}
+                    {/* ============================ */}
                     {unitIndex === 2 && (
                       <>
-                        {/* Per-step grads 1 */}
+                        {/* Per-step grads 1 (Unit2) */}
                         <div
                           className="absolute border-2 border-solid border-black rounded-xl bg-white
                             transition-all duration-1000"
@@ -507,11 +794,9 @@ const ModelSplitAnimation = () => {
                                 ? 1
                                 : 0,
                             transform:
-                              // normal "pull up" for GPU1
                               translatePerstepGrads1 && gpuIndex === 1
                                 ? 'translateY(-320px) scale(0.9)'
-                                : // final short nudge for GPU0 if finalTranslatePerstep is on
-                                finalTranslatePerstep && gpuIndex === 0
+                                : finalTranslatePerstep && gpuIndex === 0
                                 ? 'translateY(80px) scale(0.9)'
                                 : 'none',
                             zIndex: translatePerstepGrads1
@@ -536,7 +821,7 @@ const ModelSplitAnimation = () => {
                           </span>
                         </div>
 
-                        {/* Per-step grads 2 */}
+                        {/* Per-step grads 2 (Unit2) */}
                         <div
                           className="absolute border-2 border-solid border-black rounded-xl bg-white
                             transition-all duration-1000"
@@ -552,11 +837,9 @@ const ModelSplitAnimation = () => {
                                 ? 1
                                 : 0,
                             transform:
-                              // normal "push down" for GPU0
                               translatePerstepGrads2 && gpuIndex === 0
                                 ? 'translateY(320px) scale(0.9)'
-                                : // final short nudge for GPU1 if finalTranslatePerstep is on
-                                finalTranslatePerstep && gpuIndex === 1
+                                : finalTranslatePerstep && gpuIndex === 1
                                 ? 'translateY(80px) scale(0.9)'
                                 : 'none',
                             zIndex: translatePerstepGrads2
@@ -568,6 +851,192 @@ const ModelSplitAnimation = () => {
                               translatePerstepGrads2 &&
                               gpuIndex === 1 &&
                               showTemporaryGlow
+                                ? 'rgba(255, 200, 200, 1)'
+                                : 'white'
+                          }}
+                        >
+                          <span className="text-xs absolute top-1/2 left-1/2 
+                            -translate-x-1/2 -translate-y-1/2 whitespace-nowrap text-center"
+                          >
+                            Per step
+                            <br />
+                            grads 2
+                          </span>
+                        </div>
+                      </>
+                    )}
+
+                    {/* ============================ */}
+                    {/* Per-step grads for Unit1    */}
+                    {/* ============================ */}
+                    {unitIndex === 1 && (
+                      <>
+                        {/* Per-step grads 1 (Unit1) */}
+                        <div
+                          className="absolute border-2 border-solid border-black rounded-xl bg-white
+                            transition-all duration-1000"
+                          style={{
+                            height: '25%',
+                            width: shrinkPerstepGradsU1 ? '50%' : '100%',
+                            top: '-25%',
+                            left: 0,
+                            opacity:
+                              gpuIndex === 1 && hideGpu1Perstep1U1
+                                ? 0
+                                : showPerstepGradsU1
+                                ? 1
+                                : 0,
+                            transform:
+                              translatePerstepGrads1U1 && gpuIndex === 1
+                                ? 'translateY(-320px) scale(0.9)'
+                                : finalTranslatePerstepU1 && gpuIndex === 0
+                                ? 'translateY(80px) scale(0.9)'
+                                : 'none',
+                            zIndex: translatePerstepGrads1U1
+                              ? gpuIndex === 1
+                                ? 10
+                                : 30
+                              : 'auto',
+                            backgroundColor:
+                              translatePerstepGrads1U1 &&
+                              gpuIndex === 0 &&
+                              showTemporaryGlowU1Gpu1
+                                ? 'rgba(255, 200, 200, 1)'
+                                : 'white'
+                          }}
+                        >
+                          <span className="text-xs absolute top-1/2 left-1/2 
+                            -translate-x-1/2 -translate-y-1/2 whitespace-nowrap text-center"
+                          >
+                            Per step
+                            <br />
+                            grads 1
+                          </span>
+                        </div>
+
+                        {/* Per-step grads 2 (Unit1) */}
+                        <div
+                          className="absolute border-2 border-solid border-black rounded-xl bg-white
+                            transition-all duration-1000"
+                          style={{
+                            height: '25%',
+                            width: shrinkPerstepGradsU1 ? '50%' : '100%',
+                            top: '-25%',
+                            right: 0,
+                            opacity:
+                              gpuIndex === 0 && hideGpu0Perstep2U1
+                                ? 0
+                                : showPerstepGradsU1
+                                ? 1
+                                : 0,
+                            transform:
+                              translatePerstepGrads2U1 && gpuIndex === 0
+                                ? 'translateY(320px) scale(0.9)'
+                                : finalTranslatePerstepU1 && gpuIndex === 1
+                                ? 'translateY(80px) scale(0.9)'
+                                : 'none',
+                            zIndex: translatePerstepGrads2U1
+                              ? gpuIndex === 0
+                                ? 10
+                                : 30
+                              : 'auto',
+                            backgroundColor:
+                              translatePerstepGrads2U1 &&
+                              gpuIndex === 1 &&
+                              showTemporaryGlowU1Gpu0
+                                ? 'rgba(255, 200, 200, 1)'
+                                : 'white'
+                          }}
+                        >
+                          <span className="text-xs absolute top-1/2 left-1/2 
+                            -translate-x-1/2 -translate-y-1/2 whitespace-nowrap text-center"
+                          >
+                            Per step
+                            <br />
+                            grads 2
+                          </span>
+                        </div>
+                      </>
+                    )}
+
+                    {/* ============================ */}
+                    {/* Per-step grads for Unit0    */}
+                    {/* ============================ */}
+                    {unitIndex === 0 && (
+                      <>
+                        {/* Per-step grads 1 (Unit0) */}
+                        <div
+                          className="absolute border-2 border-solid border-black rounded-xl bg-white
+                            transition-all duration-1000"
+                          style={{
+                            height: '25%',
+                            width: shrinkPerstepGradsU0 ? '50%' : '100%',
+                            top: '-25%',
+                            left: 0,
+                            opacity:
+                              gpuIndex === 1 && hideGpu1Perstep1U0
+                                ? 0
+                                : showPerstepGradsU0
+                                ? 1
+                                : 0,
+                            transform:
+                              translatePerstepGrads1U0 && gpuIndex === 1
+                                ? 'translateY(-320px) scale(0.9)'
+                                : finalTranslatePerstepU0 && gpuIndex === 0
+                                ? 'translateY(80px) scale(0.9)'
+                                : 'none',
+                            zIndex: translatePerstepGrads1U0
+                              ? gpuIndex === 1
+                                ? 10
+                                : 30
+                              : 'auto',
+                            backgroundColor:
+                              translatePerstepGrads1U0 &&
+                              gpuIndex === 0 &&
+                              showTemporaryGlowU0Gpu1
+                                ? 'rgba(255, 200, 200, 1)'
+                                : 'white'
+                          }}
+                        >
+                          <span className="text-xs absolute top-1/2 left-1/2 
+                            -translate-x-1/2 -translate-y-1/2 whitespace-nowrap text-center"
+                          >
+                            Per step
+                            <br />
+                            grads 1
+                          </span>
+                        </div>
+
+                        {/* Per-step grads 2 (Unit0) */}
+                        <div
+                          className="absolute border-2 border-solid border-black rounded-xl bg-white
+                            transition-all duration-1000"
+                          style={{
+                            height: '25%',
+                            width: shrinkPerstepGradsU0 ? '50%' : '100%',
+                            top: '-25%',
+                            right: 0,
+                            opacity:
+                              gpuIndex === 0 && hideGpu0Perstep2U0
+                                ? 0
+                                : showPerstepGradsU0
+                                ? 1
+                                : 0,
+                            transform:
+                              translatePerstepGrads2U0 && gpuIndex === 0
+                                ? 'translateY(320px) scale(0.9)'
+                                : finalTranslatePerstepU0 && gpuIndex === 1
+                                ? 'translateY(80px) scale(0.9)'
+                                : 'none',
+                            zIndex: translatePerstepGrads2U0
+                              ? gpuIndex === 0
+                                ? 10
+                                : 30
+                              : 'auto',
+                            backgroundColor:
+                              translatePerstepGrads2U0 &&
+                              gpuIndex === 1 &&
+                              showTemporaryGlowU0Gpu0
                                 ? 'rgba(255, 200, 200, 1)'
                                 : 'white'
                           }}
@@ -600,10 +1069,14 @@ const ModelSplitAnimation = () => {
                         top: '25%',
                         height: 'calc(75%)',
                         width: '64px',
-                        opacity: unitIndex === 2 && hideUnit2Activations 
-                          ? 0 
-                          : showActivationsBox[unitIndex] 
-                            ? 1 
+                        // Hide activation for Unit2, Unit1, or Unit0 if necessary
+                        opacity:
+                          (unitIndex === 2 && hideUnit2Activations) ||
+                          (unitIndex === 1 && hideUnit1Activations) ||
+                          (unitIndex === 0 && hideUnit0Activations)
+                            ? 0
+                            : showActivationsBox[unitIndex]
+                            ? 1
                             : 0,
                         right: gpuIndex === 1 ? 'auto' : 0,
                         left: gpuIndex === 1 ? 0 : 'auto',
@@ -684,9 +1157,12 @@ const ModelSplitAnimation = () => {
                           style={{
                             height: 'calc(25%)',
                             width:
-                              ((expandParamsBox[unitIndex] && !shrinkParamsBox[unitIndex]) ||
-                              (unitIndex === 2 && expandUnit2ParamsFinal)) &&
-                              !shrinkExpandedParams
+                              (
+                                (expandParamsBox[unitIndex] && !shrinkParamsBox[unitIndex]) ||
+                                (unitIndex === 2 && expandUnit2ParamsFinal && !shrinkExpandedParams) ||
+                                (unitIndex === 1 && expandUnit1ParamsFinal && !shrinkExpandedParamsU1) ||
+                                (unitIndex === 0 && expandUnit0ParamsFinal && !shrinkExpandedParamsU0)
+                              )
                                 ? '128px'
                                 : '100%',
                             left: gpuIndex === 1 ? 'auto' : '0',
@@ -712,20 +1188,31 @@ const ModelSplitAnimation = () => {
                             transform: `translate(0, ${
                               showInternalStructure ? '-100%' : '-50%'
                             })`,
-                            // If finalTranslatePerstep is true for GPU0 or GPU1, we raise zIndex for that grads box
-                            zIndex: finalTranslatePerstep ? 40 : 'auto',
+                            // Raise zIndex if final translation is happening for that unit
+                            zIndex: (
+                              (finalTranslatePerstep && unitIndex === 2) ||
+                              (finalTranslatePerstepU1 && unitIndex === 1) ||
+                              (finalTranslatePerstepU0 && unitIndex === 0)
+                            )
+                              ? 40
+                              : 'auto',
                             backgroundColor:
-                              finalTranslatePerstep &&
-                              unitIndex === 2 &&
-                              gpuIndex === 0 &&
-                              showTemporaryGlowUnit2Grads
+                              // Glow for Unit2
+                              (finalTranslatePerstep && unitIndex === 2 && gpuIndex === 0 && showTemporaryGlowUnit2Grads)
                                 ? 'rgba(255, 200, 200, 1)'
-                                : finalTranslatePerstep &&
-                                  unitIndex === 2 &&
-                                  gpuIndex === 1 &&
-                                  showTemporaryGlowUnit2GradsGpu1
+                              : (finalTranslatePerstep && unitIndex === 2 && gpuIndex === 1 && showTemporaryGlowUnit2GradsGpu1)
                                 ? 'rgba(255, 200, 200, 1)'
-                                : 'white'
+                              // Glow for Unit1
+                              : (finalTranslatePerstepU1 && unitIndex === 1 && gpuIndex === 0 && showTemporaryGlowUnit1GradsGpu0)
+                                ? 'rgba(255, 200, 200, 1)'
+                              : (finalTranslatePerstepU1 && unitIndex === 1 && gpuIndex === 1 && showTemporaryGlowUnit1GradsGpu1)
+                                ? 'rgba(255, 200, 200, 1)'
+                              // Glow for Unit0
+                              : (finalTranslatePerstepU0 && unitIndex === 0 && gpuIndex === 0 && showTemporaryGlowUnit0GradsGpu0)
+                                ? 'rgba(255, 200, 200, 1)'
+                              : (finalTranslatePerstepU0 && unitIndex === 0 && gpuIndex === 1 && showTemporaryGlowUnit0GradsGpu1)
+                                ? 'rgba(255, 200, 200, 1)'
+                              : 'white'
                           }}
                         >
                           <span className="text-xs absolute top-1/2 left-1/2
@@ -775,37 +1262,67 @@ const ModelSplitAnimation = () => {
           setShowHalvesUnit2(false);
           setShowInternalStructure(false);
           setCenterGPUs(false);
+
+          // Unit2
           setShowPerstepGrads(false);
           setShrinkPerstepGrads(false);
-          setTranslatePerstepGrads2(false);
           setTranslatePerstepGrads1(false);
+          setTranslatePerstepGrads2(false);
           setHideGpu1Perstep1(false);
           setHideGpu0Perstep2(false);
           setFinalTranslatePerstep(false);
           setExpandUnit2ParamsFinal(false);
           setShrinkExpandedParams(false);
-
-          // First chevron set
-          setShowChevrons(false);
-          setChevronFadeOutIndex(-1);
-
-          // Second chevron set
-          setShowChevrons2(false);
-
-          // Reset expansions
-          setExpandParamsBox([false, false, false]);
-          setShowActivationsBox([false, false, false]);
-          setShrinkParamsBox([false, false, false]);
-
-          // Trigger the entire sequence again
-          setShouldReset((prev) => !prev);
-
-          // Reset temporary glows
+          setHideUnit2Activations(false);
           setShowTemporaryGlow(false);
           setShowTemporaryGlow1(false);
           setShowTemporaryGlowUnit2Grads(false);
           setShowTemporaryGlowUnit2GradsGpu1(false);
-          setHideUnit2Activations(false);
+
+          // Unit1
+          setExpandUnit1ParamsFinal(false);
+          setShowPerstepGradsU1(false);
+          setShrinkPerstepGradsU1(false);
+          setTranslatePerstepGrads1U1(false);
+          setTranslatePerstepGrads2U1(false);
+          setHideGpu1Perstep1U1(false);
+          setHideGpu0Perstep2U1(false);
+          setFinalTranslatePerstepU1(false);
+          setHideUnit1Activations(false);
+          setShrinkExpandedParamsU1(false);
+          setShowTemporaryGlowU1Gpu0(false);
+          setShowTemporaryGlowU1Gpu1(false);
+          setShowTemporaryGlowUnit1GradsGpu0(false);
+          setShowTemporaryGlowUnit1GradsGpu1(false);
+
+          // Unit0 (NEW)
+          setExpandUnit0ParamsFinal(false);
+          setShowPerstepGradsU0(false);
+          setShrinkPerstepGradsU0(false);
+          setTranslatePerstepGrads1U0(false);
+          setTranslatePerstepGrads2U0(false);
+          setHideGpu1Perstep1U0(false);
+          setHideGpu0Perstep2U0(false);
+          setFinalTranslatePerstepU0(false);
+          setHideUnit0Activations(false);
+          setShrinkExpandedParamsU0(false);
+          setShowTemporaryGlowU0Gpu0(false);
+          setShowTemporaryGlowU0Gpu1(false);
+          setShowTemporaryGlowUnit0GradsGpu0(false);
+          setShowTemporaryGlowUnit0GradsGpu1(false);
+
+          // Basic expansions
+          setExpandParamsBox([false, false, false]);
+          setShowActivationsBox([false, false, false]);
+          setShrinkParamsBox([false, false, false]);
+
+          // Chevrons
+          setShowChevrons(false);
+          setChevronFadeOutIndex(-1);
+          setShowChevrons2(false);
+
+          // Trigger the entire sequence again
+          setShouldReset((prev) => !prev);
         }}
         className="absolute bottom-4 left-1/2 transform -translate-x-1/2 
           px-4 py-2 bg-blue-500 text-white rounded-xl hover:bg-blue-600
