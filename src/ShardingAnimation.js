@@ -6,6 +6,8 @@ const ShardingAnimation = () => {
     const [showTransition, setShowTransition] = useState(false);
     const [showArrow, setShowArrow] = useState(false);
     const [showCopy, setShowCopy] = useState(false);
+    const [showParamB, setShowParamB] = useState(false);
+    const [shiftArrows, setShiftArrows] = useState(false);
     const [offset1, setOffset1] = useState(0);
     const [offset2, setOffset2] = useState(-13);
     const [numel, setNumel] = useState(6);
@@ -33,11 +35,23 @@ const ShardingAnimation = () => {
         setNumel(5);
       }, 3000);
 
+      // Shift arrows 500ms after offset changes
+      const shiftArrowsTimer = setTimeout(() => {
+        setShiftArrows(true);
+      }, 3500);
+
+      // Show Parameter B boxes 500ms after arrows shift
+      const paramBTimer = setTimeout(() => {
+        setShowParamB(true);
+      }, 4000);
+
       return () => {
         clearTimeout(transitionTimer);
         clearTimeout(arrowTimer);
         clearTimeout(copyTimer);
         clearTimeout(offsetTimer);
+        clearTimeout(shiftArrowsTimer);
+        clearTimeout(paramBTimer);
       };
     }, []);
 
@@ -95,9 +109,30 @@ const ShardingAnimation = () => {
                     <span className="mt-2 text-sm font-medium">Parameter A</span>
                   </div>
 
-                  <div className={`absolute -bottom-16 -left-3 transition-opacity duration-500 ease-in-out ${
+                  {/* Floating copy of boxes 6-10 (Parameter B) */}
+                  <div 
+                    className={`absolute -bottom-32 left-[320px] flex flex-col items-center transition-all duration-700 ease-in-out ${
+                      showParamB ? 'translate-y-8 opacity-100' : 'translate-y-0 opacity-0'
+                    }`}
+                  >
+                    <div className="relative flex gap-1 p-1.5">
+                      <div className="absolute inset-0 border-2 border-solid border-blue-500 rounded-xl pointer-events-none" />
+                      {boxes.slice(6, 11).map((num) => (
+                        <div
+                          key={`paramB-${num}`}
+                          className="flex items-center justify-center w-10 h-8 border-2 border-solid 
+                                     border-blue-500 rounded-lg bg-white text-sm shadow-lg"
+                        >
+                          <span className="font-semibold">{num}</span>
+                        </div>
+                      ))}
+                    </div>
+                    <span className="mt-2 text-sm font-medium">Parameter B</span>
+                  </div>
+
+                  <div className={`absolute -bottom-16 -left-3 transition-all duration-500 ease-in-out ${
                     showArrow ? 'opacity-100' : 'opacity-0'
-                  }`}>
+                  } ${shiftArrows ? 'translate-x-[265px]' : ''}`}>
                     <div className="flex flex-col items-center">
                     <svg 
                       viewBox="0 0 24 40"
@@ -110,10 +145,9 @@ const ShardingAnimation = () => {
                       <span className="text-sm font-medium">Start</span>
                     </div>
                   </div>
-                  {/* Second arrow at box 7 */}
-                  <div className={`absolute -bottom-16 left-[256px] transition-opacity duration-500 ease-in-out ${
+                  <div className={`absolute -bottom-16 left-[256px] transition-all duration-500 ease-in-out ${
                     showArrow ? 'opacity-100' : 'opacity-0'
-                  }`}>
+                  } ${shiftArrows ? 'translate-x-[222px]' : ''}`}>
                     <div className="flex flex-col items-center">
                     <svg 
                       viewBox="0 0 24 40"
@@ -185,7 +219,22 @@ const ShardingAnimation = () => {
                 </div>
                 <span className="mt-2 text-sm font-medium">Parameter A</span>
               </div>
-        
+
+              {/* Parameter B empty tensor for second row */}
+              <div 
+                className={`absolute -bottom-32 left-[369px] flex flex-col items-center transition-all duration-700 ease-in-out ${
+                  showParamB ? 'translate-y-8 opacity-100' : 'translate-y-0 opacity-0'
+                }`}
+              >
+                <div className="relative flex gap-1 p-1.5">
+                  <div className="absolute inset-0 border-2 border-solid border-blue-500 rounded-xl pointer-events-none" />
+                  <div className="h-8 px-4 flex items-center justify-center">
+                    <span className="text-sm font-medium text-gray-500">Empty Tensor</span>
+                  </div>
+                </div>
+                <span className="mt-2 text-sm font-medium">Parameter B</span>
+              </div>
+
               {/* Solid boxes 0-12 with label */}
               <div className="flex flex-col items-center">
                 <span className="mb-2 text-sm font-medium">Local Shard</span>
