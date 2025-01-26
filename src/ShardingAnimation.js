@@ -6,6 +6,9 @@ const ShardingAnimation = () => {
     const [showTransition, setShowTransition] = useState(false);
     const [showArrow, setShowArrow] = useState(false);
     const [showCopy, setShowCopy] = useState(false);
+    const [offset1, setOffset1] = useState(0);
+    const [offset2, setOffset2] = useState(-13);
+    const [numel, setNumel] = useState(6);
 
     useEffect(() => {
       // Show offset and numel first
@@ -22,10 +25,18 @@ const ShardingAnimation = () => {
         setShowCopy(true);
       }, 1500);
 
+      // Change offsets and numel after copy appears
+      const offsetTimer = setTimeout(() => {
+        setOffset1(6);
+        setOffset2(-7);
+        setNumel(5);
+      }, 2000);
+
       return () => {
         clearTimeout(transitionTimer);
         clearTimeout(arrowTimer);
         clearTimeout(copyTimer);
+        clearTimeout(offsetTimer);
       };
     }, []);
 
@@ -41,8 +52,8 @@ const ShardingAnimation = () => {
                   showTransition ? 'opacity-100' : 'opacity-0'
                 }`}
               >
-                <span>Offset: 0</span>
-                <span>Numel: 6</span>
+                <span>Offset: {offset1}</span>
+                <span>Numel: {numel}</span>
               </div>
             </div>
             <div className="-space-x-0.5 flex">
@@ -141,8 +152,8 @@ const ShardingAnimation = () => {
                   showTransition ? 'opacity-100' : 'opacity-0'
                 }`}
               >
-                <span>Offset: -13</span>
-                <span>Numel: 6</span>
+                <span>Offset: {offset2}</span>
+                <span>Numel: {numel}</span>
               </div>
             </div>
             <div className="-space-x-0.5 flex">
