@@ -70,7 +70,7 @@ const ShardingAnimation = () => {
                   >
                     <div className="relative flex gap-1 p-1.5">
                       <div className="absolute inset-0 border-2 border-solid border-blue-500 rounded-xl pointer-events-none" />
-                      {boxes.slice(0, 7).map((num) => (
+                      {boxes.slice(0, 6).map((num) => (
                         <div
                           key={`copy-${num}`}
                           className="flex items-center justify-center w-10 h-8 border-2 border-solid 
@@ -83,7 +83,7 @@ const ShardingAnimation = () => {
                     <span className="mt-2 text-sm font-medium">Parameter A</span>
                   </div>
 
-                  <div className={`absolute -bottom-16 -left-2 transition-opacity duration-500 ease-in-out ${
+                  <div className={`absolute -bottom-16 -left-3 transition-opacity duration-500 ease-in-out ${
                     showArrow ? 'opacity-100' : 'opacity-0'
                   }`}>
                     <div className="flex flex-col items-center">
@@ -99,7 +99,7 @@ const ShardingAnimation = () => {
                     </div>
                   </div>
                   {/* Second arrow at box 7 */}
-                  <div className={`absolute -bottom-16 left-[304px] transition-opacity duration-500 ease-in-out ${
+                  <div className={`absolute -bottom-16 left-[256px] transition-opacity duration-500 ease-in-out ${
                     showArrow ? 'opacity-100' : 'opacity-0'
                   }`}>
                     <div className="flex flex-col items-center">
@@ -161,7 +161,7 @@ const ShardingAnimation = () => {
 
               {/* Parameter A copy for second row */}
               <div 
-                className={`absolute -bottom-32 left-[92px] flex flex-col items-center transition-all duration-700 ease-in-out ${
+                className={`absolute -bottom-32 left-[71px] flex flex-col items-center transition-all duration-700 ease-in-out ${
                   showCopy ? 'translate-y-8 opacity-100' : 'translate-y-0 opacity-0'
                 }`}
               >
