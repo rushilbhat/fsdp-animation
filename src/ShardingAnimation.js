@@ -137,9 +137,9 @@ const ShardingAnimation = () => {
                     <span className="mt-2 text-sm font-medium">Parameter A</span>
                   </div>
 
-                  {/* Floating copy of boxes 6-10 (Parameter B) */}
+                  {/* Floating copy of boxes 6-10 (Parameter B) 320px = 48px*/}
                   <div 
-                    className={`absolute -bottom-32 left-[320px] flex flex-col items-center transition-all duration-700 ease-in-out ${
+                    className={`absolute -bottom-32 left-[372px] flex flex-col items-center transition-all duration-700 ease-in-out ${
                       showParamB ? 'translate-y-8 opacity-100' : 'translate-y-0 opacity-0'
                     }`}
                   >
@@ -158,9 +158,9 @@ const ShardingAnimation = () => {
                     <span className="mt-2 text-sm font-medium">Parameter B</span>
                   </div>
 
-                  {/* Floating copy of boxes 11-12 (Parameter C) */}
+                  {/* Floating copy of boxes 11-12 (Parameter C) 596px*/}
                   <div 
-                    className={`absolute -bottom-32 left-[885px] flex flex-col items-center transition-all duration-700 ease-in-out ${
+                    className={`absolute -bottom-32 left-[700px] flex flex-col items-center transition-all duration-700 ease-in-out ${
                       showParamC ? 'translate-y-8 opacity-100' : 'translate-y-0 opacity-0'
                     }`}
                   >
@@ -254,9 +254,9 @@ const ShardingAnimation = () => {
                 ))}
               </div>
 
-              {/* Parameter C for second row */}
+              {/* Parameter C for second row 365px 600px*/}
               <div 
-                className={`absolute -bottom-32 left-[667px] flex flex-col items-center transition-all duration-700 ease-in-out ${
+                className={`absolute -bottom-32 left-[469px] flex flex-col items-center transition-all duration-700 ease-in-out ${
                   showParamC ? 'translate-y-8 opacity-100' : 'translate-y-0 opacity-0'
                 }`}
               >
@@ -277,7 +277,7 @@ const ShardingAnimation = () => {
 
               {/* Parameter A copy for second row */}
               <div 
-                className={`absolute -bottom-32 left-[71px] flex flex-col items-center transition-all duration-700 ease-in-out ${
+                className={`absolute -bottom-32 left-[1px] flex flex-col items-center transition-all duration-700 ease-in-out ${
                   showCopy ? 'translate-y-8 opacity-100' : 'translate-y-0 opacity-0'
                 }`}
               >
@@ -290,9 +290,9 @@ const ShardingAnimation = () => {
                 <span className="mt-2 text-sm font-medium">Parameter A</span>
               </div>
 
-              {/* Parameter B empty tensor for second row */}
+              {/* Parameter B empty tensor for second row 183px 322px*/} 
               <div 
-                className={`absolute -bottom-32 left-[369px] flex flex-col items-center transition-all duration-700 ease-in-out ${
+                className={`absolute -bottom-32 left-[235px] flex flex-col items-center transition-all duration-700 ease-in-out ${
                   showParamB ? 'translate-y-8 opacity-100' : 'translate-y-0 opacity-0'
                 }`}
               >
