@@ -85,18 +85,20 @@ const ShardingAnimation = () => {
 
     return (
       <div className="w-full h-screen flex items-center justify-center p-4">
-        <div className="flex flex-col gap-64 -mt-28">
+        <div className="flex flex-col gap-72 -mt-28">
           {/* First Row */}
           <div className="relative">
-            <div className="absolute -top-12 left-0 flex flex-col">
-              <span className="text-sm font-medium">GPU 0</span>
+            <div className="absolute -top-10 left-0">
+              <span className="text-lg font-semibold">GPU 0</span>
+            </div>
+            <div className="absolute -top-10 right-0 flex flex-col items-end">
               <div 
                 className={`flex flex-col text-sm text-gray-600 transition-opacity duration-500 ease-in-out ${
                   showTransition ? 'opacity-100' : 'opacity-0'
                 }`}
               >
-                <span>Offset: {offset1}</span>
-                <span>Numel: {numel}</span>
+                <span>Offset: <span className="font-mono inline-block w-6 text-right">{offset1}</span></span>
+                <span>Numel: <span className="font-mono inline-block w-6 text-right">{numel}</span></span>
               </div>
             </div>
             <div className="-space-x-0.5 flex">
@@ -227,17 +229,24 @@ const ShardingAnimation = () => {
             </div>
           </div>
 
+          {/* Dashed line divider */}
+          <div className="absolute left-1/2 transform -translate-x-1/2" style={{ top: '50%' }}>
+            <div className="w-[1200px] border-t-2 border-dashed border-gray-400"></div>
+          </div>
+
           {/* Second Row */}
           <div className="relative">
-            <div className="absolute -top-12 left-0 flex flex-col">
-              <span className="text-sm font-medium">GPU 1</span>
+            <div className="absolute -top-14 left-0">
+              <span className="text-lg font-semibold">GPU 1</span>
+            </div>
+            <div className="absolute -top-14 right-0 flex flex-col items-end">
               <div 
                 className={`flex flex-col text-sm text-gray-600 transition-opacity duration-500 ease-in-out ${
                   showTransition ? 'opacity-100' : 'opacity-0'
                 }`}
               >
-                <span>Offset: {offset2}</span>
-                <span>Numel: {numel}</span>
+                <span>Offset: <span className="font-mono inline-block w-6 text-right">{offset2}</span></span>
+                <span>Numel: <span className="font-mono inline-block w-6 text-right">{numel}</span></span>
               </div>
             </div>
             <div className="-space-x-0.5 flex">
