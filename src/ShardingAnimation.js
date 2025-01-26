@@ -5,6 +5,7 @@ const ShardingAnimation = () => {
     const negativeBoxes = Array.from({ length: 13 }, (_, i) => -13 + i); // Creates array from -13 to -1
     const [showTransition, setShowTransition] = useState(false);
     const [showArrow, setShowArrow] = useState(false);
+    const [showCopy, setShowCopy] = useState(false);
 
     useEffect(() => {
       // Show offset and numel first
@@ -17,9 +18,14 @@ const ShardingAnimation = () => {
         setShowArrow(true);
       }, 1000);
 
+      const copyTimer = setTimeout(() => {
+        setShowCopy(true);
+      }, 1500);
+
       return () => {
         clearTimeout(transitionTimer);
         clearTimeout(arrowTimer);
+        clearTimeout(copyTimer);
       };
     }, []);
 
@@ -55,6 +61,28 @@ const ShardingAnimation = () => {
                       <span className="font-semibold">{num}</span>
                     </div>
                   ))}
+
+                  {/* Floating copy of boxes 0-6 */}
+                  <div 
+                    className={`absolute -bottom-32 left-0 flex flex-col items-center transition-all duration-700 ease-in-out ${
+                      showCopy ? 'translate-y-8 opacity-100' : 'translate-y-0 opacity-0'
+                    }`}
+                  >
+                    <div className="relative flex gap-1 p-1.5">
+                      <div className="absolute inset-0 border-2 border-solid border-blue-500 rounded-xl pointer-events-none" />
+                      {boxes.slice(0, 7).map((num) => (
+                        <div
+                          key={`copy-${num}`}
+                          className="flex items-center justify-center w-10 h-8 border-2 border-solid 
+                                     border-blue-500 rounded-lg bg-white text-sm shadow-lg"
+                        >
+                          <span className="font-semibold">{num}</span>
+                        </div>
+                      ))}
+                    </div>
+                    <span className="mt-2 text-sm font-medium">Parameter A</span>
+                  </div>
+
                   <div className={`absolute -bottom-16 -left-2 transition-opacity duration-500 ease-in-out ${
                     showArrow ? 'opacity-100' : 'opacity-0'
                   }`}>
@@ -129,6 +157,21 @@ const ShardingAnimation = () => {
                     <span className="font-semibold">{num}</span>
                   </div>
                 ))}
+              </div>
+
+              {/* Parameter A copy for second row */}
+              <div 
+                className={`absolute -bottom-32 left-[92px] flex flex-col items-center transition-all duration-700 ease-in-out ${
+                  showCopy ? 'translate-y-8 opacity-100' : 'translate-y-0 opacity-0'
+                }`}
+              >
+                <div className="relative flex gap-1 p-1.5">
+                  <div className="absolute inset-0 border-2 border-solid border-blue-500 rounded-xl pointer-events-none" />
+                  <div className="h-8 px-4 flex items-center justify-center">
+                    <span className="text-sm font-medium text-gray-500">Empty Tensor</span>
+                  </div>
+                </div>
+                <span className="mt-2 text-sm font-medium">Parameter A</span>
               </div>
         
               {/* Solid boxes 0-12 with label */}
