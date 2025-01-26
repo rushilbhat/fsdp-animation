@@ -7,6 +7,7 @@ const ShardingAnimation = () => {
     const [showArrow, setShowArrow] = useState(false);
     const [showCopy, setShowCopy] = useState(false);
     const [showParamB, setShowParamB] = useState(false);
+    const [showParamC, setShowParamC] = useState(false);
     const [shiftArrows, setShiftArrows] = useState(0);
     const [showSecondRowArrows, setShowSecondRowArrows] = useState(false);
     const [offset1, setOffset1] = useState(0);
@@ -27,7 +28,7 @@ const ShardingAnimation = () => {
       // Show Parameter A boxes
       const copyTimer = setTimeout(() => {
         setShowCopy(true);
-      }, 1500);
+      }, 2000);
 
       // Change offsets and numel 1.5s after copy appears
       const offsetTimer = setTimeout(() => {
@@ -44,7 +45,7 @@ const ShardingAnimation = () => {
       // Show Parameter B boxes 500ms after arrows shift
       const paramBTimer = setTimeout(() => {
         setShowParamB(true);
-      }, 4000);
+      }, 4500);
 
       // Final offset and numel change 1s after Parameter B appears
       const finalOffsetTimer = setTimeout(() => {
@@ -58,10 +59,15 @@ const ShardingAnimation = () => {
         setShiftArrows(2);
       }, 6000);
 
+      // Show Parameter C boxes right after second shift
+      const paramCTimer = setTimeout(() => {
+        setShowParamC(true);
+      }, 7000);
+
       // Show second row arrows 500ms after second shift
       const showSecondRowArrowsTimer = setTimeout(() => {
         setShowSecondRowArrows(true);
-      }, 6200);
+      }, 6100);
 
       return () => {
         clearTimeout(transitionTimer);
@@ -72,6 +78,7 @@ const ShardingAnimation = () => {
         clearTimeout(paramBTimer);
         clearTimeout(finalOffsetTimer);
         clearTimeout(secondShiftTimer);
+        clearTimeout(paramCTimer);
         clearTimeout(showSecondRowArrowsTimer);
       };
     }, []);
@@ -151,6 +158,27 @@ const ShardingAnimation = () => {
                     <span className="mt-2 text-sm font-medium">Parameter B</span>
                   </div>
 
+                  {/* Floating copy of boxes 11-12 (Parameter C) */}
+                  <div 
+                    className={`absolute -bottom-32 left-[885px] flex flex-col items-center transition-all duration-700 ease-in-out ${
+                      showParamC ? 'translate-y-8 opacity-100' : 'translate-y-0 opacity-0'
+                    }`}
+                  >
+                    <div className="relative flex gap-1 p-1.5">
+                      <div className="absolute inset-0 border-2 border-solid border-blue-500 rounded-xl pointer-events-none" />
+                      {boxes.slice(11, 13).map((num) => (
+                        <div
+                          key={`paramC-${num}`}
+                          className="flex items-center justify-center w-10 h-8 border-2 border-solid 
+                                     border-blue-500 rounded-lg bg-white text-sm shadow-lg"
+                        >
+                          <span className="font-semibold">{num}</span>
+                        </div>
+                      ))}
+                    </div>
+                    <span className="mt-2 text-sm font-medium">Parameter C</span>
+                  </div>
+
                   <div className={`absolute -bottom-16 -left-3 transition-all duration-500 ease-in-out ${
                     showArrow ? 'opacity-100' : 'opacity-0'
                   } ${shiftArrows === 1 ? 'translate-x-[265px]' : ''} ${shiftArrows === 2 ? 'translate-x-[487px]' : ''}`}>
@@ -224,6 +252,27 @@ const ShardingAnimation = () => {
                     <span className="font-semibold">{num}</span>
                   </div>
                 ))}
+              </div>
+
+              {/* Parameter C for second row */}
+              <div 
+                className={`absolute -bottom-32 left-[667px] flex flex-col items-center transition-all duration-700 ease-in-out ${
+                  showParamC ? 'translate-y-8 opacity-100' : 'translate-y-0 opacity-0'
+                }`}
+              >
+                <div className="relative flex gap-1 p-1.5">
+                  <div className="absolute inset-0 border-2 border-solid border-blue-500 rounded-xl pointer-events-none" />
+                  {boxes.slice(0, 12).map((num) => (
+                    <div
+                      key={`paramC-second-${num}`}
+                      className="flex items-center justify-center w-10 h-8 border-2 border-solid 
+                                 border-blue-500 rounded-lg bg-white text-sm shadow-lg"
+                    >
+                      <span className="font-semibold">{num}</span>
+                    </div>
+                  ))}
+                </div>
+                <span className="mt-2 text-sm font-medium">Parameter C</span>
               </div>
 
               {/* Parameter A copy for second row */}
