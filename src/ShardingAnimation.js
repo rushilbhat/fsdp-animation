@@ -7,7 +7,8 @@ const ShardingAnimation = () => {
     const [showArrow, setShowArrow] = useState(false);
     const [showCopy, setShowCopy] = useState(false);
     const [showParamB, setShowParamB] = useState(false);
-    const [shiftArrows, setShiftArrows] = useState(false);
+    const [shiftArrows, setShiftArrows] = useState(0);
+    const [showSecondRowArrows, setShowSecondRowArrows] = useState(false);
     const [offset1, setOffset1] = useState(0);
     const [offset2, setOffset2] = useState(-13);
     const [numel, setNumel] = useState(6);
@@ -37,13 +38,30 @@ const ShardingAnimation = () => {
 
       // Shift arrows 500ms after offset changes
       const shiftArrowsTimer = setTimeout(() => {
-        setShiftArrows(true);
+        setShiftArrows(1);
       }, 3500);
 
       // Show Parameter B boxes 500ms after arrows shift
       const paramBTimer = setTimeout(() => {
         setShowParamB(true);
       }, 4000);
+
+      // Final offset and numel change 1s after Parameter B appears
+      const finalOffsetTimer = setTimeout(() => {
+        setOffset1(11);
+        setOffset2(-2);
+        setNumel(14);
+      }, 5500);
+
+      // Second arrow shift 500ms after final offset change
+      const secondShiftTimer = setTimeout(() => {
+        setShiftArrows(2);
+      }, 6000);
+
+      // Show second row arrows 500ms after second shift
+      const showSecondRowArrowsTimer = setTimeout(() => {
+        setShowSecondRowArrows(true);
+      }, 6200);
 
       return () => {
         clearTimeout(transitionTimer);
@@ -52,6 +70,9 @@ const ShardingAnimation = () => {
         clearTimeout(offsetTimer);
         clearTimeout(shiftArrowsTimer);
         clearTimeout(paramBTimer);
+        clearTimeout(finalOffsetTimer);
+        clearTimeout(secondShiftTimer);
+        clearTimeout(showSecondRowArrowsTimer);
       };
     }, []);
 
@@ -132,7 +153,7 @@ const ShardingAnimation = () => {
 
                   <div className={`absolute -bottom-16 -left-3 transition-all duration-500 ease-in-out ${
                     showArrow ? 'opacity-100' : 'opacity-0'
-                  } ${shiftArrows ? 'translate-x-[265px]' : ''}`}>
+                  } ${shiftArrows === 1 ? 'translate-x-[265px]' : ''} ${shiftArrows === 2 ? 'translate-x-[487px]' : ''}`}>
                     <div className="flex flex-col items-center">
                     <svg 
                       viewBox="0 0 24 40"
@@ -147,7 +168,7 @@ const ShardingAnimation = () => {
                   </div>
                   <div className={`absolute -bottom-16 left-[256px] transition-all duration-500 ease-in-out ${
                     showArrow ? 'opacity-100' : 'opacity-0'
-                  } ${shiftArrows ? 'translate-x-[222px]' : ''}`}>
+                  } ${shiftArrows === 1 ? 'translate-x-[222px]' : ''} ${shiftArrows === 2 ? 'translate-x-[308px]' : ''}`}>
                     <div className="flex flex-col items-center">
                     <svg 
                       viewBox="0 0 24 40"
@@ -249,6 +270,38 @@ const ShardingAnimation = () => {
                       <span className="font-semibold">{num}</span>
                     </div>
                   ))}
+                </div>
+              </div>
+
+              {/* Add arrows for second row */}
+              <div className={`absolute -bottom-16 left-[568px] transition-all duration-500 ease-in-out ${
+                showSecondRowArrows ? 'opacity-100' : 'opacity-0'
+              }`}>
+                <div className="flex flex-col items-center">
+                  <svg 
+                    viewBox="0 0 24 40"
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="w-6 h-10"
+                  >
+                    <path d="M12 3L9 12H15L12 3Z" fill="rgb(31, 41, 55)" stroke="rgb(31, 41, 55)" stroke-width="2" stroke-linejoin="round"/>
+                    <rect x="11" y="11" width="1.5" height="26" fill="rgb(31, 41, 55)" />
+                  </svg>
+                  <span className="text-sm font-medium">Start</span>
+                </div>
+              </div>
+              <div className={`absolute -bottom-16 left-[1101px] transition-all duration-500 ease-in-out ${
+                showSecondRowArrows ? 'opacity-100' : 'opacity-0'
+              }`}>
+                <div className="flex flex-col items-center">
+                  <svg 
+                    viewBox="0 0 24 40"
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="w-6 h-10"
+                  >
+                    <path d="M12 3L9 12H15L12 3Z" fill="rgb(31, 41, 55)" stroke="rgb(31, 41, 55)" stroke-width="2" stroke-linejoin="round"/>
+                    <rect x="11" y="11" width="1.5" height="26" fill="rgb(31, 41, 55)" />
+                  </svg>
+                  <span className="text-sm font-medium">End</span>
                 </div>
               </div>
             </div>
