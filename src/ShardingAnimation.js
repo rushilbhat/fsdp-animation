@@ -13,6 +13,7 @@ const ShardingAnimation = () => {
     const [offset1, setOffset1] = useState(0);
     const [offset2, setOffset2] = useState(-13);
     const [numel, setNumel] = useState(6);
+    const [isFlashing, setIsFlashing] = useState(false);
 
     useEffect(() => {
       // Show offset and numel first
@@ -30,8 +31,14 @@ const ShardingAnimation = () => {
         setShowCopy(true);
       }, 2000);
 
+      // Flash before first change
+      const firstFlashTimer = setTimeout(() => {
+        setIsFlashing(true);
+      }, 2800);
+
       // Change offsets and numel 1.5s after copy appears
       const offsetTimer = setTimeout(() => {
+        setIsFlashing(false);
         setOffset1(6);
         setOffset2(-7);
         setNumel(5);
@@ -47,8 +54,14 @@ const ShardingAnimation = () => {
         setShowParamB(true);
       }, 4500);
 
+      // Flash before second change
+      const secondFlashTimer = setTimeout(() => {
+        setIsFlashing(true);
+      }, 5300);
+
       // Final offset and numel change 1s after Parameter B appears
       const finalOffsetTimer = setTimeout(() => {
+        setIsFlashing(false);
         setOffset1(11);
         setOffset2(-2);
         setNumel(14);
@@ -73,9 +86,11 @@ const ShardingAnimation = () => {
         clearTimeout(transitionTimer);
         clearTimeout(arrowTimer);
         clearTimeout(copyTimer);
+        clearTimeout(firstFlashTimer);
         clearTimeout(offsetTimer);
         clearTimeout(shiftArrowsTimer);
         clearTimeout(paramBTimer);
+        clearTimeout(secondFlashTimer);
         clearTimeout(finalOffsetTimer);
         clearTimeout(secondShiftTimer);
         clearTimeout(paramCTimer);
@@ -97,8 +112,8 @@ const ShardingAnimation = () => {
                   showTransition ? 'opacity-100' : 'opacity-0'
                 }`}
               >
-                <span>Offset: <span className="font-mono inline-block w-6 text-right">{offset1}</span></span>
-                <span>Numel: <span className="font-mono inline-block w-6 text-right">{numel}</span></span>
+                <span>Offset: <span className={`font-mono inline-block w-8 text-right ${isFlashing ? 'animate-pulse font-bold text-red-600' : ''}`}>{offset1}</span></span>
+                <span>Numel: <span className={`font-mono inline-block w-8 text-right ${isFlashing ? 'animate-pulse font-bold text-red-600' : ''}`}>{numel}</span></span>
               </div>
             </div>
             <div className="-space-x-0.5 flex">
@@ -245,8 +260,8 @@ const ShardingAnimation = () => {
                   showTransition ? 'opacity-100' : 'opacity-0'
                 }`}
               >
-                <span>Offset: <span className="font-mono inline-block w-6 text-right">{offset2}</span></span>
-                <span>Numel: <span className="font-mono inline-block w-6 text-right">{numel}</span></span>
+                <span>Offset: <span className={`font-mono inline-block w-8 text-right ${isFlashing ? 'animate-pulse font-bold text-red-600' : ''}`}>{offset2}</span></span>
+                <span>Numel: <span className={`font-mono inline-block w-8 text-right ${isFlashing ? 'animate-pulse font-bold text-red-600' : ''}`}>{numel}</span></span>
               </div>
             </div>
             <div className="-space-x-0.5 flex">
