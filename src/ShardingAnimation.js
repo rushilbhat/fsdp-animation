@@ -21,16 +21,17 @@ const ShardingAnimation = () => {
         setShowArrow(true);
       }, 1000);
 
+      // Show Parameter A boxes
       const copyTimer = setTimeout(() => {
         setShowCopy(true);
       }, 1500);
 
-      // Change offsets and numel after copy appears
+      // Change offsets and numel 1.5s after copy appears
       const offsetTimer = setTimeout(() => {
         setOffset1(6);
         setOffset2(-7);
         setNumel(5);
-      }, 2000);
+      }, 3000);
 
       return () => {
         clearTimeout(transitionTimer);
