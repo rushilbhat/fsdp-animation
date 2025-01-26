@@ -1,13 +1,44 @@
+import React, { useState, useEffect } from 'react';
+
 const ShardingAnimation = () => {
     const boxes = Array.from({ length: 26 }, (_, i) => i);
     const negativeBoxes = Array.from({ length: 13 }, (_, i) => -13 + i); // Creates array from -13 to -1
-  
+    const [showTransition, setShowTransition] = useState(false);
+    const [showArrow, setShowArrow] = useState(false);
+
+    useEffect(() => {
+      // Show offset and numel first
+      const transitionTimer = setTimeout(() => {
+        setShowTransition(true);
+      }, 500);
+
+      // Show arrow 500ms after offset and numel
+      const arrowTimer = setTimeout(() => {
+        setShowArrow(true);
+      }, 1000);
+
+      return () => {
+        clearTimeout(transitionTimer);
+        clearTimeout(arrowTimer);
+      };
+    }, []);
+
     return (
       <div className="w-full h-screen flex items-center justify-center p-4">
         <div className="flex flex-col gap-64 -mt-28">
           {/* First Row */}
           <div className="relative">
-            <span className="absolute -top-6 left-0 text-sm font-medium">GPU 0</span>
+            <div className="absolute -top-12 left-0 flex flex-col">
+              <span className="text-sm font-medium">GPU 0</span>
+              <div 
+                className={`flex flex-col text-sm text-gray-600 transition-opacity duration-500 ease-in-out ${
+                  showTransition ? 'opacity-100' : 'opacity-0'
+                }`}
+              >
+                <span>Offset: 0</span>
+                <span>Numel: 6</span>
+              </div>
+            </div>
             <div className="-space-x-0.5 flex">
               {/* First row boxes */}
               <div className="flex flex-col items-center">
@@ -24,6 +55,37 @@ const ShardingAnimation = () => {
                       <span className="font-semibold">{num}</span>
                     </div>
                   ))}
+                  <div className={`absolute -bottom-16 -left-2 transition-opacity duration-500 ease-in-out ${
+                    showArrow ? 'opacity-100' : 'opacity-0'
+                  }`}>
+                    <div className="flex flex-col items-center">
+                    <svg 
+                      viewBox="0 0 24 40"
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="w-6 h-10"
+                    >
+                      <path d="M12 3L9 12H15L12 3Z" fill="rgb(31, 41, 55)" stroke="rgb(31, 41, 55)" stroke-width="2" stroke-linejoin="round"/>
+                      <rect x="11" y="11" width="1.5" height="26" fill="rgb(31, 41, 55)" />
+                    </svg>
+                      <span className="text-sm font-medium">Start</span>
+                    </div>
+                  </div>
+                  {/* Second arrow at box 7 */}
+                  <div className={`absolute -bottom-16 left-[304px] transition-opacity duration-500 ease-in-out ${
+                    showArrow ? 'opacity-100' : 'opacity-0'
+                  }`}>
+                    <div className="flex flex-col items-center">
+                    <svg 
+                      viewBox="0 0 24 40"
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="w-6 h-10"
+                    >
+                      <path d="M12 3L9 12H15L12 3Z" fill="rgb(31, 41, 55)" stroke="rgb(31, 41, 55)" stroke-width="2" stroke-linejoin="round"/>
+                      <rect x="11" y="11" width="1.5" height="26" fill="rgb(31, 41, 55)" />
+                    </svg>
+                      <span className="text-sm font-medium">End</span>
+                    </div>
+                  </div>
                 </div>
               </div>
         
@@ -44,7 +106,17 @@ const ShardingAnimation = () => {
 
           {/* Second Row */}
           <div className="relative">
-            <span className="absolute -top-6 left-0 text-sm font-medium">GPU 1</span>
+            <div className="absolute -top-12 left-0 flex flex-col">
+              <span className="text-sm font-medium">GPU 1</span>
+              <div 
+                className={`flex flex-col text-sm text-gray-600 transition-opacity duration-500 ease-in-out ${
+                  showTransition ? 'opacity-100' : 'opacity-0'
+                }`}
+              >
+                <span>Offset: -13</span>
+                <span>Numel: 6</span>
+              </div>
+            </div>
             <div className="-space-x-0.5 flex">
               {/* Dashed boxes -13 to -1 */}
               <div className="flex gap-1 p-1.5 mt-7">
