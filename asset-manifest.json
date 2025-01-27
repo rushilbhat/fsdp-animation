@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/fsdp-animation/static/css/main.376a60eb.css",
-    "main.js": "/fsdp-animation/static/js/main.74badb62.js",
+    "main.js": "/fsdp-animation/static/js/main.11c56635.js",
     "static/js/488.25462b5c.chunk.js": "/fsdp-animation/static/js/488.25462b5c.chunk.js",
     "index.html": "/fsdp-animation/index.html",
     "main.376a60eb.css.map": "/fsdp-animation/static/css/main.376a60eb.css.map",
-    "main.74badb62.js.map": "/fsdp-animation/static/js/main.74badb62.js.map",
+    "main.11c56635.js.map": "/fsdp-animation/static/js/main.11c56635.js.map",
     "488.25462b5c.chunk.js.map": "/fsdp-animation/static/js/488.25462b5c.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.376a60eb.css",
-    "static/js/main.74badb62.js"
+    "static/js/main.11c56635.js"
   ]
 }
