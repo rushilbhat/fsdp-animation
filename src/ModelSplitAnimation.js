@@ -795,7 +795,7 @@ const ModelSplitAnimation = () => {
   // Render
   // =========================
   return (
-    <div className="w-full h-screen relative">
+    <div className="w-full h-screen relative overflow-hidden" style={{ backgroundColor: '#fdfdfd' }}>
       {/* Units Container */}
       <div
         className={`absolute top-1/2 transform -translate-y-1/2 transition-all duration-700
@@ -1239,7 +1239,7 @@ const ModelSplitAnimation = () => {
                     {/* Dashed box containing the chevrons */}
                     <div
                       className={`absolute top-0 w-full border-2 border-dashed border-black rounded-xl
-                        transition-all duration-500`}
+                        transition-all duration-[790ms]`}
                       style={{
                         height: showInternalStructure ? '25%' : '100%',
                         opacity: showInternalStructure ? 1 : 1
@@ -1335,14 +1335,14 @@ const ModelSplitAnimation = () => {
                             transform: `translate(0, ${
                               showInternalStructure ? '-100%' : '-50%'
                             })`,
-                            // Raise zIndex if final translation is happening for that unit
+                            // Raise zIndex if final translation is happening for that unit or if showInternalStructure is true
                             zIndex: (
                               (finalTranslatePerstep && unitIndex === 2) ||
                               (finalTranslatePerstepU1 && unitIndex === 1) ||
                               (finalTranslatePerstepU0 && unitIndex === 0)
                             )
                               ? 40
-                              : 'auto',
+                              : showInternalStructure ? 2 : 'auto',
                             backgroundColor:
                               // Glow for Unit2
                               (finalTranslatePerstep && unitIndex === 2 && gpuIndex === 0 && showTemporaryGlowUnit2Grads)
@@ -1378,7 +1378,8 @@ const ModelSplitAnimation = () => {
                           style={{
                             height: '50%',
                             transform: `translateY(${showInternalStructure ? '100%' : '50%'})`,
-                            opacity: showInternalStructure ? '1' : '0'
+                            opacity: showInternalStructure ? '1' : '0',
+                            zIndex: 1
                           }}
                         >
                           <span className="text-xs absolute top-1/2 left-1/2

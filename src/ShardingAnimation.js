@@ -99,7 +99,7 @@ const ShardingAnimation = () => {
     }, []);
 
     return (
-      <div className="w-full h-screen flex items-center justify-center p-4">
+      <div className="w-full h-screen flex items-center justify-center p-4 bg-[#fdfdfd]">
         <div className="flex flex-col gap-72 -mt-28">
           {/* First Row */}
           <div className="relative">
