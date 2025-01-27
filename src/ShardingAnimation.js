@@ -16,85 +16,115 @@ const ShardingAnimation = () => {
     const [isFlashing, setIsFlashing] = useState(false);
 
     useEffect(() => {
-      // Show offset and numel first
-      const transitionTimer = setTimeout(() => {
-        setShowTransition(true);
-      }, 500);
+      const startAnimation = () => {
+        // Show offset and numel first
+        const transitionTimer = setTimeout(() => {
+          setShowTransition(true);
+        }, 1000);
 
-      // Show arrow 500ms after offset and numel
-      const arrowTimer = setTimeout(() => {
-        setShowArrow(true);
-      }, 1000);
+        // Show arrow 500ms after offset and numel
+        const arrowTimer = setTimeout(() => {
+          setShowArrow(true);
+        }, 2000);
 
-      // Show Parameter A boxes
-      const copyTimer = setTimeout(() => {
-        setShowCopy(true);
-      }, 2000);
+        // Show Parameter A boxes
+        const copyTimer = setTimeout(() => {
+          setShowCopy(true);
+        }, 3000);
 
-      // Flash before first change
-      const firstFlashTimer = setTimeout(() => {
-        setIsFlashing(true);
-      }, 2800);
+        // Flash before first change (2500ms after Parameter A)
+        const firstFlashTimer = setTimeout(() => {
+          setIsFlashing(true);
+        }, 5500);
 
-      // Change offsets and numel 1.5s after copy appears
-      const offsetTimer = setTimeout(() => {
-        setIsFlashing(false);
-        setOffset1(6);
-        setOffset2(-7);
-        setNumel(5);
-      }, 3000);
+        // Change offsets and numel 200ms after flash
+        const offsetTimer = setTimeout(() => {
+          setIsFlashing(false);
+          setOffset1(6);
+          setOffset2(-7);
+          setNumel(5);
+        }, 5700);
 
-      // Shift arrows 500ms after offset changes
-      const shiftArrowsTimer = setTimeout(() => {
-        setShiftArrows(1);
-      }, 3500);
+        // Shift arrows at same time as offset changes
+        const shiftArrowsTimer = setTimeout(() => {
+          setShiftArrows(1);
+        }, 5700);
 
-      // Show Parameter B boxes 500ms after arrows shift
-      const paramBTimer = setTimeout(() => {
-        setShowParamB(true);
-      }, 4500);
+        // Show Parameter B boxes 300ms after arrows shift
+        const paramBTimer = setTimeout(() => {
+          setShowParamB(true);
+        }, 6000);
 
-      // Flash before second change
-      const secondFlashTimer = setTimeout(() => {
-        setIsFlashing(true);
-      }, 5300);
+        // Flash before second change (2500ms after Parameter B appears)
+        const secondFlashTimer = setTimeout(() => {
+          setIsFlashing(true);
+        }, 8500);
 
-      // Final offset and numel change 1s after Parameter B appears
-      const finalOffsetTimer = setTimeout(() => {
-        setIsFlashing(false);
-        setOffset1(11);
-        setOffset2(-2);
-        setNumel(14);
-      }, 5500);
+        // Final offset and numel change 200ms after flash
+        const finalOffsetTimer = setTimeout(() => {
+          setIsFlashing(false);
+          setOffset1(11);
+          setOffset2(-2);
+          setNumel(14);
+        }, 8700);
 
-      // Second arrow shift 500ms after final offset change
-      const secondShiftTimer = setTimeout(() => {
-        setShiftArrows(2);
-      }, 6000);
+        // Second arrow shift 500ms after final offset change
+        const secondShiftTimer = setTimeout(() => {
+          setShiftArrows(2);
+        }, 9200);
 
-      // Show Parameter C boxes right after second shift
-      const paramCTimer = setTimeout(() => {
-        setShowParamC(true);
-      }, 7000);
+        // Show second row arrows 100ms after second shift
+        const showSecondRowArrowsTimer = setTimeout(() => {
+          setShowSecondRowArrows(true);
+        }, 9300);
 
-      // Show second row arrows 500ms after second shift
-      const showSecondRowArrowsTimer = setTimeout(() => {
-        setShowSecondRowArrows(true);
-      }, 6100);
+        // Show Parameter C boxes right after second shift
+        const paramCTimer = setTimeout(() => {
+          setShowParamC(true);
+        }, 10200);
+
+        // Hide everything at the end (2500ms after Parameter C)
+        const hideAllTimer = setTimeout(() => {
+          setShowTransition(false);
+          setShowArrow(false);
+          setShowCopy(false);
+          setShowParamB(false);
+          setShowParamC(false);
+          setShowSecondRowArrows(false);
+          setShiftArrows(0);
+          setOffset1(0);
+          setOffset2(-13);
+          setNumel(6);
+          setIsFlashing(false);
+
+          // Restart the animation after a brief pause
+          setTimeout(() => {
+            startAnimation(); // Restart the animation
+          }, 500);
+        }, 12700);
+
+        return {
+          transitionTimer,
+          arrowTimer,
+          copyTimer,
+          firstFlashTimer,
+          offsetTimer,
+          shiftArrowsTimer,
+          paramBTimer,
+          secondFlashTimer,
+          finalOffsetTimer,
+          secondShiftTimer,
+          paramCTimer,
+          showSecondRowArrowsTimer,
+          hideAllTimer
+        };
+      };
+
+      const timers = startAnimation();
 
       return () => {
-        clearTimeout(transitionTimer);
-        clearTimeout(arrowTimer);
-        clearTimeout(copyTimer);
-        clearTimeout(firstFlashTimer);
-        clearTimeout(offsetTimer);
-        clearTimeout(shiftArrowsTimer);
-        clearTimeout(paramBTimer);
-        clearTimeout(secondFlashTimer);
-        clearTimeout(finalOffsetTimer);
-        clearTimeout(secondShiftTimer);
-        clearTimeout(paramCTimer);
-        clearTimeout(showSecondRowArrowsTimer);
+        // Clear all timers on cleanup
+        Object.values(timers).forEach(timer => clearTimeout(timer));
       };
     }, []);
 
