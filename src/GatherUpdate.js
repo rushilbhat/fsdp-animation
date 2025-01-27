@@ -7,7 +7,7 @@ const GatherUpdate = () => {
     <div className="w-full h-screen flex items-center justify-center" style={{
       backgroundColor: '#fdfdfd', transform: 'scale(0.65)'}}>
       <div className="-space-x-0.5 flex flex-col items-center">
-        <span className="mb-2 text-sm font-medium">Flat Parameter: (1,26)</span>
+        <span className="mb-2 text-lg font-medium">Flat Parameter: (1,26)</span>
         <div className="relative flex gap-1 p-1.5">
           <div className="absolute inset-0 border-2 border-solid border-gray-800 rounded-xl" />
           {boxes.map((num) => (
@@ -23,7 +23,7 @@ const GatherUpdate = () => {
 
         <div className="flex gap-40 mt-40">
           <div className="flex flex-col items-center">
-            <span className="mb-2 text-sm font-medium">Parameter A: (2,3)</span>
+            <span className="mb-2 text-lg font-medium">Parameter A: (2,3)</span>
             <div className="relative flex flex-col gap-1 p-1.5">
               <div className="absolute inset-0 border-2 border-solid border-blue-500 rounded-xl" />
               <div className="flex gap-1">
@@ -50,7 +50,7 @@ const GatherUpdate = () => {
           </div>
 
           <div className="flex flex-col items-center">
-            <span className="mb-2 text-sm font-medium">Parameter B: (1,5)</span>
+            <span className="mb-2 text-lg font-medium">Parameter B: (1,5)</span>
             <div className="relative flex gap-1 p-1.5">
               <div className="absolute inset-0 border-2 border-solid border-blue-500 rounded-xl" />
               {Array.from({ length: 5 }, (_, i) => (
@@ -65,7 +65,7 @@ const GatherUpdate = () => {
           </div>
 
           <div className="flex flex-col items-center">
-            <span className="mb-2 text-sm font-medium">Parameter C: (7,2)</span>
+            <span className="mb-2 text-lg font-medium">Parameter C: (7,2)</span>
             <div className="relative flex flex-col gap-1 p-1.5">
               <div className="absolute inset-0 border-2 border-solid border-blue-500 rounded-xl" />
               {Array.from({ length: 7 }, (_, rowIndex) => (

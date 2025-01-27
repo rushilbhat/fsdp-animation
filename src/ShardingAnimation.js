@@ -45,20 +45,20 @@ const ShardingAnimation = () => {
           setNumel(5);
         }, 5700);
 
-        // Shift arrows at same time as offset changes
+        // Shift arrows 1 second after offset changes
         const shiftArrowsTimer = setTimeout(() => {
           setShiftArrows(1);
-        }, 5700);
+        }, 6700);
 
         // Show Parameter B boxes 300ms after arrows shift
         const paramBTimer = setTimeout(() => {
           setShowParamB(true);
-        }, 6000);
+        }, 7700);
 
         // Flash before second change (2500ms after Parameter B appears)
         const secondFlashTimer = setTimeout(() => {
           setIsFlashing(true);
-        }, 8500);
+        }, 10200);
 
         // Final offset and numel change 200ms after flash
         const finalOffsetTimer = setTimeout(() => {
@@ -66,22 +66,22 @@ const ShardingAnimation = () => {
           setOffset1(11);
           setOffset2(-2);
           setNumel(14);
-        }, 8700);
+        }, 10400);
 
-        // Second arrow shift 500ms after final offset change
+        // Second arrow shift 1 second after final offset change
         const secondShiftTimer = setTimeout(() => {
           setShiftArrows(2);
-        }, 9200);
+        }, 11400);
 
         // Show second row arrows 100ms after second shift
         const showSecondRowArrowsTimer = setTimeout(() => {
           setShowSecondRowArrows(true);
-        }, 9300);
+        }, 11500);
 
         // Show Parameter C boxes right after second shift
         const paramCTimer = setTimeout(() => {
           setShowParamC(true);
-        }, 10200);
+        }, 12400);
 
         // Hide everything at the end (2500ms after Parameter C)
         const hideAllTimer = setTimeout(() => {
@@ -101,7 +101,7 @@ const ShardingAnimation = () => {
           setTimeout(() => {
             startAnimation(); // Restart the animation
           }, 500);
-        }, 12700);
+        }, 14900);
 
         return {
           transitionTimer,
@@ -139,18 +139,18 @@ const ShardingAnimation = () => {
             </div>
             <div className="absolute -top-10 right-0 flex flex-col items-end">
               <div 
-                className={`flex flex-col text-sm text-gray-600 transition-opacity duration-500 ease-in-out ${
+                className={`flex flex-col text-base text-gray-600 transition-opacity duration-500 ease-in-out ${
                   showTransition ? 'opacity-100' : 'opacity-0'
                 }`}
               >
-                <span>Offset: <span className={`font-mono inline-block w-8 text-right ${isFlashing ? 'animate-pulse font-bold text-red-600' : ''}`}>{offset1}</span></span>
-                <span>Numel: <span className={`font-mono inline-block w-8 text-right ${isFlashing ? 'animate-pulse font-bold text-red-600' : ''}`}>{numel}</span></span>
+                <span>Offset: <span className={`font-mono inline-block w-10 text-right ${isFlashing ? 'animate-pulse font-bold text-red-600' : ''}`}>{offset1}</span></span>
+                <span>Numel: <span className={`font-mono inline-block w-10 text-right ${isFlashing ? 'animate-pulse font-bold text-red-600' : ''}`}>{numel}</span></span>
               </div>
             </div>
             <div className="-space-x-0.5 flex">
               {/* First row boxes */}
               <div className="flex flex-col items-center">
-                <span className="mb-2 text-sm font-medium">Local Shard</span>
+                <span className="mb-2 text-base font-medium">Local Shard</span>
                 <div className="relative flex gap-1 p-1.5">
                   <div className="absolute inset-0 border-2 border-solid border-gray-800 rounded-xl pointer-events-none" />
                   
@@ -158,7 +158,7 @@ const ShardingAnimation = () => {
                     <div
                       key={num}
                       className="flex items-center justify-center w-10 h-8 border-2 border-solid 
-                                 border-gray-800 rounded-lg bg-white text-sm"
+                                 border-gray-800 rounded-lg bg-white text-base"
                     >
                       <span className="font-semibold">{num}</span>
                     </div>
@@ -176,13 +176,13 @@ const ShardingAnimation = () => {
                         <div
                           key={`copy-${num}`}
                           className="flex items-center justify-center w-10 h-8 border-2 border-solid 
-                                     border-blue-500 rounded-lg bg-white text-sm shadow-lg"
+                                     border-blue-500 rounded-lg bg-white text-base shadow-lg"
                         >
                           <span className="font-semibold">{num}</span>
                         </div>
                       ))}
                     </div>
-                    <span className="mt-2 text-sm font-medium">Parameter A</span>
+                    <span className="mt-2 text-base font-medium">Parameter A</span>
                   </div>
 
                   {/* Floating copy of boxes 6-10 (Parameter B) 320px = 48px*/}
@@ -197,13 +197,13 @@ const ShardingAnimation = () => {
                         <div
                           key={`paramB-${num}`}
                           className="flex items-center justify-center w-10 h-8 border-2 border-solid 
-                                     border-blue-500 rounded-lg bg-white text-sm shadow-lg"
+                                     border-blue-500 rounded-lg bg-white text-base shadow-lg"
                         >
                           <span className="font-semibold">{num}</span>
                         </div>
                       ))}
                     </div>
-                    <span className="mt-2 text-sm font-medium">Parameter B</span>
+                    <span className="mt-2 text-base font-medium">Parameter B</span>
                   </div>
 
                   {/* Floating copy of boxes 11-12 (Parameter C) 596px*/}
@@ -218,13 +218,13 @@ const ShardingAnimation = () => {
                         <div
                           key={`paramC-${num}`}
                           className="flex items-center justify-center w-10 h-8 border-2 border-solid 
-                                     border-blue-500 rounded-lg bg-white text-sm shadow-lg"
+                                     border-blue-500 rounded-lg bg-white text-base shadow-lg"
                         >
                           <span className="font-semibold">{num}</span>
                         </div>
                       ))}
                     </div>
-                    <span className="mt-2 text-sm font-medium">Parameter C</span>
+                    <span className="mt-2 text-base font-medium">Parameter C</span>
                   </div>
 
                   <div className={`absolute -bottom-16 -left-3 transition-all duration-500 ease-in-out ${
@@ -239,7 +239,7 @@ const ShardingAnimation = () => {
                       <path d="M12 3L9 12H15L12 3Z" fill="rgb(31, 41, 55)" stroke="rgb(31, 41, 55)" stroke-width="2" stroke-linejoin="round"/>
                       <rect x="11" y="11" width="1.5" height="26" fill="rgb(31, 41, 55)" />
                     </svg>
-                      <span className="text-sm font-medium">Start</span>
+                      <span className="text-base font-medium">Start</span>
                     </div>
                   </div>
                   <div className={`absolute -bottom-16 left-[256px] transition-all duration-500 ease-in-out ${
@@ -254,7 +254,7 @@ const ShardingAnimation = () => {
                       <path d="M12 3L9 12H15L12 3Z" fill="rgb(31, 41, 55)" stroke="rgb(31, 41, 55)" stroke-width="2" stroke-linejoin="round"/>
                       <rect x="11" y="11" width="1.5" height="26" fill="rgb(31, 41, 55)" />
                     </svg>
-                      <span className="text-sm font-medium">End</span>
+                      <span className="text-base font-medium">End</span>
                     </div>
                   </div>
                 </div>
@@ -266,7 +266,7 @@ const ShardingAnimation = () => {
                   <div
                     key={num}
                     className={`flex items-center justify-center w-10 h-8 border-2 border-dashed 
-                               ${num === 25 ? 'border-red-500' : 'border-gray-800'} rounded-lg bg-white text-sm`}
+                               ${num === 25 ? 'border-red-500' : 'border-gray-800'} rounded-lg bg-white text-base`}
                   >
                     <span className="font-semibold">{num}</span>
                   </div>
@@ -287,12 +287,12 @@ const ShardingAnimation = () => {
             </div>
             <div className="absolute -top-14 right-0 flex flex-col items-end">
               <div 
-                className={`flex flex-col text-sm text-gray-600 transition-opacity duration-500 ease-in-out ${
+                className={`flex flex-col text-base text-gray-600 transition-opacity duration-500 ease-in-out ${
                   showTransition ? 'opacity-100' : 'opacity-0'
                 }`}
               >
-                <span>Offset: <span className={`font-mono inline-block w-8 text-right ${isFlashing ? 'animate-pulse font-bold text-red-600' : ''}`}>{offset2}</span></span>
-                <span>Numel: <span className={`font-mono inline-block w-8 text-right ${isFlashing ? 'animate-pulse font-bold text-red-600' : ''}`}>{numel}</span></span>
+                <span>Offset: <span className={`font-mono inline-block w-10 text-right ${isFlashing ? 'animate-pulse font-bold text-red-600' : ''}`}>{offset2}</span></span>
+                <span>Numel: <span className={`font-mono inline-block w-10 text-right ${isFlashing ? 'animate-pulse font-bold text-red-600' : ''}`}>{numel}</span></span>
               </div>
             </div>
             <div className="-space-x-0.5 flex">
@@ -302,7 +302,7 @@ const ShardingAnimation = () => {
                   <div
                     key={`second-${num}`}
                     className="flex items-center justify-center w-10 h-8 border-2 border-dashed 
-                               border-gray-800 rounded-lg bg-white text-sm"
+                               border-gray-800 rounded-lg bg-white text-base"
                   >
                     <span className="font-semibold">{num}</span>
                   </div>
@@ -321,13 +321,13 @@ const ShardingAnimation = () => {
                     <div
                       key={`paramC-second-${num}`}
                       className="flex items-center justify-center w-10 h-8 border-2 border-solid 
-                                 border-blue-500 rounded-lg bg-white text-sm shadow-lg"
+                                 border-blue-500 rounded-lg bg-white text-base shadow-lg"
                     >
                       <span className="font-semibold">{num}</span>
                     </div>
                   ))}
                 </div>
-                <span className="mt-2 text-sm font-medium">Parameter C</span>
+                <span className="mt-2 text-base font-medium">Parameter C</span>
               </div>
 
               {/* Parameter A copy for second row */}
@@ -339,10 +339,10 @@ const ShardingAnimation = () => {
                 <div className="relative flex gap-1 p-1.5">
                   <div className="absolute inset-0 border-2 border-solid border-blue-500 rounded-xl pointer-events-none" />
                   <div className="h-8 px-4 flex items-center justify-center">
-                    <span className="text-sm font-medium text-gray-500">Empty Tensor</span>
+                    <span className="text-base font-medium text-gray-500">Empty Tensor</span>
                   </div>
                 </div>
-                <span className="mt-2 text-sm font-medium">Parameter A</span>
+                <span className="mt-2 text-base font-medium">Parameter A</span>
               </div>
 
               {/* Parameter B empty tensor for second row 183px 322px*/} 
@@ -354,22 +354,22 @@ const ShardingAnimation = () => {
                 <div className="relative flex gap-1 p-1.5">
                   <div className="absolute inset-0 border-2 border-solid border-blue-500 rounded-xl pointer-events-none" />
                   <div className="h-8 px-4 flex items-center justify-center">
-                    <span className="text-sm font-medium text-gray-500">Empty Tensor</span>
+                    <span className="text-base font-medium text-gray-500">Empty Tensor</span>
                   </div>
                 </div>
-                <span className="mt-2 text-sm font-medium">Parameter B</span>
+                <span className="mt-2 text-base font-medium">Parameter B</span>
               </div>
 
               {/* Solid boxes 0-12 with label */}
               <div className="flex flex-col items-center">
-                <span className="mb-2 text-sm font-medium">Local Shard</span>
+                <span className="mb-2 text-base font-medium">Local Shard</span>
                 <div className="relative flex gap-1 p-1.5">
                   <div className="absolute inset-0 border-2 border-solid border-gray-800 rounded-xl pointer-events-none" />
                   {boxes.slice(0, 13).map((num) => (
                     <div
                       key={`second-${num}`}
                       className={`flex items-center justify-center w-10 h-8 border-2 border-solid 
-                                 ${num === 12 ? 'border-red-500' : 'border-gray-800'} rounded-lg bg-white text-sm`}
+                                 ${num === 12 ? 'border-red-500' : 'border-gray-800'} rounded-lg bg-white text-base`}
                     >
                       <span className="font-semibold">{num}</span>
                     </div>
@@ -390,7 +390,7 @@ const ShardingAnimation = () => {
                     <path d="M12 3L9 12H15L12 3Z" fill="rgb(31, 41, 55)" stroke="rgb(31, 41, 55)" stroke-width="2" stroke-linejoin="round"/>
                     <rect x="11" y="11" width="1.5" height="26" fill="rgb(31, 41, 55)" />
                   </svg>
-                  <span className="text-sm font-medium">Start</span>
+                  <span className="text-base font-medium">Start</span>
                 </div>
               </div>
               <div className={`absolute -bottom-16 left-[1101px] transition-all duration-500 ease-in-out ${
@@ -405,7 +405,7 @@ const ShardingAnimation = () => {
                     <path d="M12 3L9 12H15L12 3Z" fill="rgb(31, 41, 55)" stroke="rgb(31, 41, 55)" stroke-width="2" stroke-linejoin="round"/>
                     <rect x="11" y="11" width="1.5" height="26" fill="rgb(31, 41, 55)" />
                   </svg>
-                  <span className="text-sm font-medium">End</span>
+                  <span className="text-base font-medium">End</span>
                 </div>
               </div>
             </div>
