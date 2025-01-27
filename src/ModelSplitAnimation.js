@@ -725,6 +725,7 @@ const ModelSplitAnimation = () => {
                                         [...prevTimers, ...fadeOutSequence].forEach(clearTimeout);
                                         clearTimeout(finalFadeOutTimer);
                                         clearTimeout(expandParamsFinalTimer);
+                                        clearTimeout(perstepGradsTimer);
                                       };
                                     }, 1000);
 
@@ -767,16 +768,16 @@ const ModelSplitAnimation = () => {
                   }, 1000);
 
                   return () => clearTimeout(structureTimer);
-                }, 700);
+                }, 1200);
 
                 return () => clearTimeout(centerTimer);
-              }, 700);
+              }, 1200);
 
               return () => clearTimeout(halves2Timer);
-            }, 700);
+            }, 1200);
 
             return () => clearTimeout(halves1Timer);
-          }, 700);
+          }, 1200);
 
           return () => clearTimeout(gpuTimer);
         }, 1000);
@@ -806,7 +807,7 @@ const ModelSplitAnimation = () => {
     >
       {/* Units Container */}
       <div
-        className={`absolute top-1/2 transform -translate-y-1/2 transition-all duration-700
+        className={`absolute top-1/2 transform -translate-y-1/2 transition-all duration-[1000ms]
           ${centerGPUs ? 'opacity-0' : 'opacity-100'}`}
         style={{
           left: isShifted ? '25%' : '50%',
@@ -866,7 +867,7 @@ const ModelSplitAnimation = () => {
               key={gpuIndex}
               className={`h-72 border-2 border-black rounded-xl 
                 bg-white relative
-                transition-all duration-500 ease-in-out
+                transition-all duration-[1000ms] ease-in-out
                 ${showGPUs ? 'opacity-100' : 'opacity-0'}`}
               style={{
                 width: '520px',
