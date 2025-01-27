@@ -795,7 +795,15 @@ const ModelSplitAnimation = () => {
   // Render
   // =========================
   return (
-    <div className="w-full h-screen relative overflow-hidden" style={{ backgroundColor: '#fdfdfd' }}>
+    <div
+      className="w-full h-screen relative overflow-hidden"
+      style={{
+        backgroundColor: '#fdfdfd',
+        // transform: 'scale(0.80)', // Scale down to 75% of the original size
+        transform: 'scale(0.80) translateY(10%)', // Scale down to 75% of the original size
+        transformOrigin: 'top left', // Set the origin to the top-left corner
+      }}
+    >
       {/* Units Container */}
       <div
         className={`absolute top-1/2 transform -translate-y-1/2 transition-all duration-700
@@ -1399,87 +1407,6 @@ const ModelSplitAnimation = () => {
           ))}
         </div>
       </div>
-
-      {/* Reset Button */}
-      <button
-        onClick={() => {
-          // Reset everything
-          setIsSplit(false);
-          setIsShifted(false);
-          setShowGPUs(false);
-          setShowHalvesUnit0(false);
-          setShowHalvesUnit1(false);
-          setShowHalvesUnit2(false);
-          setCenterGPUs(false);
-          setShowInternalStructure(false);
-
-          // Unit2
-          setShowPerstepGrads(false);
-          setShrinkPerstepGrads(false);
-          setTranslatePerstepGrads1(false);
-          setTranslatePerstepGrads2(false);
-          setHideGpu1Perstep1(false);
-          setHideGpu0Perstep2(false);
-          setFinalTranslatePerstep(false);
-          setExpandUnit2ParamsFinal(false);
-          setShrinkExpandedParams(false);
-          setHideUnit2Activations(false);
-          setShowTemporaryGlow(false);
-          setShowTemporaryGlow1(false);
-          setShowTemporaryGlowUnit2Grads(false);
-          setShowTemporaryGlowUnit2GradsGpu1(false);
-
-          // Unit1
-          setExpandUnit1ParamsFinal(false);
-          setShowPerstepGradsU1(false);
-          setShrinkPerstepGradsU1(false);
-          setTranslatePerstepGrads1U1(false);
-          setTranslatePerstepGrads2U1(false);
-          setHideGpu1Perstep1U1(false);
-          setHideGpu0Perstep2U1(false);
-          setFinalTranslatePerstepU1(false);
-          setHideUnit1Activations(false);
-          setShrinkExpandedParamsU1(false);
-          setShowTemporaryGlowU1Gpu0(false);
-          setShowTemporaryGlowU1Gpu1(false);
-          setShowTemporaryGlowUnit1GradsGpu0(false);
-          setShowTemporaryGlowUnit1GradsGpu1(false);
-
-          // Unit0 (NEW)
-          setExpandUnit0ParamsFinal(false);
-          setShowPerstepGradsU0(false);
-          setShrinkPerstepGradsU0(false);
-          setTranslatePerstepGrads1U0(false);
-          setTranslatePerstepGrads2U0(false);
-          setHideGpu1Perstep1U0(false);
-          setHideGpu0Perstep2U0(false);
-          setFinalTranslatePerstepU0(false);
-          setHideUnit0Activations(false);
-          setShrinkExpandedParamsU0(false);
-          setShowTemporaryGlowU0Gpu0(false);
-          setShowTemporaryGlowU0Gpu1(false);
-          setShowTemporaryGlowUnit0GradsGpu0(false);
-          setShowTemporaryGlowUnit0GradsGpu1(false);
-
-          // Basic expansions
-          setExpandParamsBox([false, false, false]);
-          setShowActivationsBox([false, false, false]);
-          setShrinkParamsBox([false, false, false]);
-
-          // Chevrons
-          setShowChevrons(false);
-          setChevronFadeOutIndex(-1);
-          setShowChevrons2(false);
-
-          // Trigger the entire sequence again
-          setShouldReset((prev) => !prev);
-        }}
-        className="absolute bottom-4 left-1/2 transform -translate-x-1/2 
-          px-4 py-2 bg-blue-500 text-white rounded-xl hover:bg-blue-600
-          transition-colors duration-200"
-      >
-        Reset
-      </button>
     </div>
   );
 };

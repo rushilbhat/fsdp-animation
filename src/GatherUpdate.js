@@ -4,7 +4,8 @@ const GatherUpdate = () => {
   const boxes = Array.from({ length: 26 }, (_, i) => i);
 
   return (
-    <div className="w-full h-screen flex items-center justify-center bg-[#fdfdfd]">
+    <div className="w-full h-screen flex items-center justify-center" style={{
+      backgroundColor: '#fdfdfd', transform: 'scale(0.65)'}}>
       <div className="-space-x-0.5 flex flex-col items-center">
         <span className="mb-2 text-sm font-medium">Flat Parameter: (1,26)</span>
         <div className="relative flex gap-1 p-1.5">
