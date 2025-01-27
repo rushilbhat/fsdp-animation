@@ -800,9 +800,10 @@ const ModelSplitAnimation = () => {
       className="w-full h-screen relative overflow-hidden"
       style={{
         backgroundColor: '#fdfdfd',
-        // transform: 'scale(0.80)', // Scale down to 75% of the original size
-        transform: 'scale(0.80) translateY(10%)', // Scale down to 75% of the original size
-        transformOrigin: 'top left', // Set the origin to the top-left corner
+        // Add min-width to prevent squeezing
+        minWidth: '1200px',
+        transform: 'scale(0.80) translateY(10%)',
+        transformOrigin: 'top left',
       }}
     >
       {/* Units Container */}
@@ -810,7 +811,8 @@ const ModelSplitAnimation = () => {
         className={`absolute top-1/2 transform -translate-y-1/2 transition-all duration-[1000ms]
           ${centerGPUs ? 'opacity-0' : 'opacity-100'}`}
         style={{
-          left: isShifted ? '25%' : '50%',
+          // Adjust left position to use fixed pixel values
+          left: isShifted ? '300px' : '600px',
           transform: `translate(${isShifted ? '-50%' : '-50%'}, -50%)`
         }}
       >
@@ -857,7 +859,8 @@ const ModelSplitAnimation = () => {
           ${showGPUs ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}
         `}
         style={{
-          left: centerGPUs ? '50%' : '75%',
+          // Adjust left position to use fixed pixel values
+          left: centerGPUs ? '600px' : '900px',
           transform: 'translate(-50%, -50%)'
         }}
       >
